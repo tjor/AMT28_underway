@@ -1,0 +1,38 @@
+# filter and prepare data for Taka JAXA2020
+clear all
+pkg load netcdf
+
+load /Users/gdal/Cruises/AMT29/Processed/Underway/cdom/cdom.oct
+
+
+# filter data
+[~, ~, i2keep] = find(cdom.hr.ay(:,end)<0.001);
+
+amt29.ay = cdom.hr.ay(i2keep,:);
+amt29.wv = [400:2:750];
+amt29.time = cdom.hr.time(i2keep,:);
+amt29.lat = cdom.hr.lat(i2keep,:);
+amt29.lon = cdom.hr.lon(i2keep,:);
+amt29.sst = cdom.hr.sst(i2keep,:);
+amt29.sal = cdom.hr.sal(i2keep,:);
+amt29.chl = cdom.hr.chl(i2keep,:);
+
+save -v6 amt29_ay.mat amt29
+
+%
+% flds = fieldnames(amt29);
+% nc_out = "amt29_ay.nc";
+% ##### create NetCDF file
+% ## create variables
+% for iv = 1:length(flds)
+% 	disp(flds{iv})
+%
+% 	if strcmp(flds{iv}, "ay")
+% 		nccreate(nc_out, flds{iv}, "Dimensions", { "wavelength", length(amt29.wv),  "time", length(amt29.time)}  );
+% 		ncwrite( nc_out, flds{iv}, amt29.(flds{iv})' );
+% 	else
+% 		% nccreate(nc_out, flds{iv}, "Dimensions", {"wavelength", length(amt29.wv),  "time", length(amt29.time)} );
+% 		% ncwrite( nc_out, flds{iv}, amt29.(flds{iv})' );
+% 	endif
+%
+% endfor
