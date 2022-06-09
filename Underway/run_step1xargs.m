@@ -48,8 +48,7 @@
 
 
    # parallelise using xargs
-   NCPUs = nproc()-1;
    system( ["echo  " num2str(jdays'), "| xargs -n1 octave -qf pass2step1par.m"] )
-   #system( ["echo  " num2str(jdays'), "| xargs -P" NCPUs " -n1 octave -qf pass2step1par.m"] )
+   #system( ["echo  " num2str(jdays'), "| xargs -P" NProc " -n1 octave -qf pass2step1par.m"] )
 
 
