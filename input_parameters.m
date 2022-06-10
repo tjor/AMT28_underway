@@ -15,7 +15,7 @@ CRUISE = 'AMT28';
 % Dates
 % Set date interval to be processed (format is 'yyyymmdd')
 % (this will have to be changed each time the scripts are run)
-inidate = '20180928';
+inidate = '20180927';
 enddate = '20180928';
 
 % Hour of the day for which Wapped files are searched
@@ -58,7 +58,8 @@ endif
 
 %-----------------------------
 % Paths
-MAIN_PATH = '/users/rsg/tjor/scratch_network/AMT_underway/AMT28/';
+#MAIN_PATH = '/users/rsg/tjor/scratch_network/AMT_underway/AMT28/';
+MAIN_PATH = '/data/abitibi1/scratch/scratch_disk/tjor/AMT_underway/AMT28/';
 %MAIN_PATH = [MAIN_PATH,'/Data/',CRUISE,'/'];     % Root directory for current AMT cruise
 PATH_DATA = [MAIN_PATH,'Data/'];        % Directory with all raw and wapped data
 PATH_SOURCE = [MAIN_PATH,'Source/'];% Directory with all source code
