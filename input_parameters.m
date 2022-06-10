@@ -8,15 +8,15 @@ warning('off');
 
 %-----------------------------
 CRUISE = 'AMT28';
-
+WAP_ROOT = lower(CRUISE); % tjor: `root' part of WAP file 
 %-----------------------------
 % Variables to be changed during cruise according to specific setups and user needs
 %
 % Dates
 % Set date interval to be processed (format is 'yyyymmdd')
 % (this will have to be changed each time the scripts are run)
-inidate = '20180927';
-enddate = '20180928';
+inidate = '20180928';
+enddate = '20180929';
 
 % Hour of the day for which Wapped files are searched
 % (day is not processed if a file for the specified hour is not found)
@@ -41,12 +41,12 @@ if UWAY_WAP_SUBDIR == 'withACS167/'
     dh8_ports = {2,7,5,6,1,4}; 
     % Serial numbers are mainly needed for acs and ac9 config files, leave blank for other instruments
     dh8_serialnumber = {[],122,167,[],1173,[]}; 
-elseif UWAY_WAP_SUBDIR == 'withAC9277/'
-    dh8_instruments = {'ctd','acs','ac9','bb3','clam'};
+elseif UWAY_WAP_SUBDIR == 'With_AC9/'
+    #dh8_instruments = {'ctd','acs','ac9','bb3','clam'};
     % Ports must corresponds to same ports as in dh8_instruments
-    dh8_ports = {2,7,5,1,4}; 
+    #dh8_ports = {2,7,5,1,4}; 
     % Serial numbers are mainly needed for acs and ac9 config files, leave blank for other instruments
-    dh8_serialnumber = {[],122,277,1173,[]}; 
+    #dh8_serialnumber = {[],122,277,1173,[]}; 
 elseif UWAY_WAP_SUBDIR == '/' % tjor: this is the `default' config (i.e. without subdirectories inside WAP_extracted)
     dh8_instruments = {'ctd','acs','cstar','bb3'};
     % Ports must corresponds to same ports as in dh8_instruments
