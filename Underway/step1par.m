@@ -63,8 +63,8 @@ function step1par(jday)
            case 'acs'
                %-------------------------------------
                % TO DO: MOVE INTO input_parameters
-               % Read from calibration file
-               acsNoWL = get_acs_NoWL(din,dh8_serialnumber{idh8});   % sn 122 % tjor: din = input dir, NoWL = number of ACS wavelengths
+               % Read number of acs wavelengths from calibration file
+	       acsNoWL = get_acs_NoWL(D_CAL_FILES, ACS_CAL_FILE_NAME);   
                %-------------------------------------
                acs.raw = bindata_new(strdate, acsNoWL*2);
                acs.anc = bindata_new(strdate, 5);
@@ -73,7 +73,7 @@ function step1par(jday)
                % TO DO: MOVE INTO input_parameters
                % Read from calibration file
                %-------------------------------------
-               acsNoWL2= get_acs_NoWL(din,dh8_serialnumber{idh8});   % sn 122
+               acsNoWL2 = get_acs_NoWL(D_CAL_FILES, ACS_CAL_FILE_NAME);   	
                acs2.raw = bindata_new(strdate, acsNoWL2*2);
                acs2.anc = bindata_new(strdate, 5);
            case 'ac9'

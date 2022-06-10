@@ -1,10 +1,6 @@
-function NoWL = get_acs_NoWL(din,serial_num)
+function NoWL = get_acs_NoWL(D_CAL_FILES, ACS_CAL_FILE_NAME)
     % Read number of wavelengths of the given acs from the calibration file
-    % Cal file is in din/Calibration directory
-    cla_dir = [din,'Calibration_files/']; 
-    fname = sprintf('acs%3d.dev',serial_num);
-[cla_dir,fname]
-    fid = fopen([cla_dir,fname],"r");
+    fid = fopen([D_CAL_FILES, ACS_CAL_FILE_NAME], "r");
     for i = 1:8
         d = fgetl(fid);
     endfor

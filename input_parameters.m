@@ -86,6 +86,23 @@ PATH_TS = [PATH_SHIP,'Compress/']; % Directory with ship underway ctd
 PATH_GPS = [PATH_SHIP,'GPS/']; % Directory with ship gps
 ship_uway_fname = '*Surf-DY-SM_DY1*'; % Name of ship underway system files
 %-----------------------------
+% calibration file dir
+D_CAL_FILES = [PATH_DATA, UWAY_DIR, 'Calibration_files/'];
+
+
+
+
+%-----------------------------
+% ACS calibration file
+ACS_CAL_FILE_NAME = 'acs122_20180923.dev'; %tjor -remove hardcorded filename from get_acs_NoWL.m
+%-----------------------------
+
+
+
+
+
+
+
 
 %-----------------------------
 % Parameters specific for Optics rig plotting/processing
