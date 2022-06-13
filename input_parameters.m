@@ -35,12 +35,12 @@ UWAY_WAP_SUBDIR = '/';
 %
 % Implemented instruments to selct from are 
 % {'ctd','acs','bb3','cstar','acs2','ac9','clam'}
-if UWAY_WAP_SUBDIR == 'WithACS167/'
-    dh8_instruments = {'ctd','acs','acs2','cstar','bb3','clam'};
+if UWAY_WAP_SUBDIR == 'With_AC9_Without_ACS/'
+    dh8_instruments = {'ac9','bb3','cstar','cdt')
     % Ports must corresponds to same ports as in dh8_instruments
-    dh8_ports = {2,7,5,6,1,4}; # % tjor - port number - from 1-7?
+    dh8_ports = {1,2,3,4}; 
     % Serial numbers are mainly needed for acs and ac9 config files, leave blank for other instruments
-    dh8_serialnumber = {[],122,167,[],1173,[]}; 
+    dh8_serialnumber = {227,1173,1426,[]},
 elseif UWAY_WAP_SUBDIR == 'With_AC9/' % tjor: selects subdirector with AC9
     dh8_instruments = {'acs','bb3','ac9', 'cdt'};
     % Ports must corresponds to same ports as in dh8_instruments
