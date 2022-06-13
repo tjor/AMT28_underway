@@ -35,18 +35,18 @@ UWAY_WAP_SUBDIR = '/';
 %
 % Implemented instruments to selct from are 
 % {'ctd','acs','bb3','cstar','acs2','ac9','clam'}
-if UWAY_WAP_SUBDIR == 'withACS167/'
+if UWAY_WAP_SUBDIR == 'WithACS167/'
     dh8_instruments = {'ctd','acs','acs2','cstar','bb3','clam'};
     % Ports must corresponds to same ports as in dh8_instruments
-    dh8_ports = {2,7,5,6,1,4}; 
+    dh8_ports = {2,7,5,6,1,4}; # % tjor - port number - from 1-7?
     % Serial numbers are mainly needed for acs and ac9 config files, leave blank for other instruments
     dh8_serialnumber = {[],122,167,[],1173,[]}; 
-elseif UWAY_WAP_SUBDIR == 'With_AC9/'
-    #dh8_instruments = {'ctd','acs','ac9','bb3','clam'};
+elseif UWAY_WAP_SUBDIR == 'With_AC9/' % tjor: selects subdirector with AC9
+    dh8_instruments = {'acs','bb3','ac9', 'cdt'};
     % Ports must corresponds to same ports as in dh8_instruments
-    #dh8_ports = {2,7,5,1,4}; 
+    dh8_ports = {1,2,3,4}; 
     % Serial numbers are mainly needed for acs and ac9 config files, leave blank for other instruments
-    #dh8_serialnumber = {[],122,277,1173,[]}; 
+    dh8_serialnumber = {122,1173,227,[]}
 elseif UWAY_WAP_SUBDIR == '/' % tjor: this is the `default' config (i.e. without subdirectories inside WAP_extracted)
     dh8_instruments = {'ctd','acs','cstar','bb3'};
     % Ports must corresponds to same ports as in dh8_instruments
@@ -89,20 +89,10 @@ ship_uway_fname = '*Surf-DY-SM_DY1*'; % Name of ship underway system files
 % calibration file dir
 D_CAL_FILES = [PATH_DATA, UWAY_DIR, 'Calibration_files/'];
 
-
-
-
 %-----------------------------
 % ACS calibration file
 ACS_CAL_FILE_NAME = 'acs122_20180923.dev'; %tjor -remove hardcorded filename from get_acs_NoWL.m
 %-----------------------------
-
-
-
-
-
-
-
 
 %-----------------------------
 % Parameters specific for Optics rig plotting/processing
@@ -119,7 +109,7 @@ chlac9lim = [0 5];
 %-----------------------------
 
 % Processors to be used by parcellfun in run_step1par.m
-NProc = nproc()-1;
+NProc = nproc() - 1;
 
 % Name of processed file to be saved
 fproc_name = ['optics_' lower(CRUISE) '_'];
