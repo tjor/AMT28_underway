@@ -45,10 +45,8 @@
    % Select only jdays with wapped files
    jdays = jdays(ijdays);
 
-
-
    # parallelise using xargs
-   system( ["echo  " num2str(jdays'), "| xargs -n1 octave -qf pass2step1par.m"] )
-   #system( ["echo  " num2str(jdays'), "| xargs -P" NProc " -n1 octave -qf pass2step1par.m"] )
-
+   % system( ["echo  " num2str(jdays'), "| xargs -n1 octave -qf pass2step1par.m"] )
+   % system( ["echo  " num2str(jdays'), "| xargs -P" NProc" -n1 octave -qf pass2step1par.m"] ) 
+   system( ["echo  " num2str(jdays'), "| xargs -P 7 -n1 octave -qf pass2step1par.m"] ) % temporary fix - hardcoded NProc
 
