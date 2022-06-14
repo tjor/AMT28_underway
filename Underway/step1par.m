@@ -4,9 +4,10 @@ function step1par(jday)
    run('../input_parameters.m')
 
    din = [PATH_DATA UWAY_DIR];
-   wapdir = [din DATA_WAPPED UWAY_WAP_SUBDIR];
+   wapdir = [din DATA_WAPPED UWAY_WAP_SUBDIR]
    flowdir = [din,DATA_FLOW];
    savedir = [OUT_PROC UWAY_DIR 'Step1/' UWAY_WAP_SUBDIR];
+
    % Create directory if it does not exists
    if ~exist(savedir,'dir')
       mkdir(savedir)
@@ -32,18 +33,18 @@ function step1par(jday)
    % endif
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-   fn1 = [lower(CRUISE) '_*' doy ];  %needed for reading the wapfiles in the next loop below
-   % fn1 = [WAP_ROOT '_*' doy ];  %needed for reading the wapfiles in the next loop below
+   %fn1 = [lower(CRUISE) '_*' doy ];  %needed for reading the wapfiles in the next loop below
+   fn1 = [WAP_ROOT '_*' doy ];  % needed for reading the wapfiles in the next loop below - accounts for caseb
 
    % fflush(stdout);
 
    %---GRG----
-   wp = dir([wapdir,fn1, '*19_T_ASCII*']);  %identify each hour of 'iday'
+   wp = dir([wapdir,fn1, '*19_T_ASCII*'])  %identify each hour of 'iday'
 
    %break up the name
    for iwp = 1:size(wp,1)
       [token, remainder] = strtok(wp(iwp).name,'.');
-      wapfiles{iwp,1} = fn1;
+      wapfiles{iwp,1} = fn1
       wapfiles{iwp,2} = strtok(remainder,'.');  
       
       % exception to handle two file names on the same day when we swapped ac9 with cstar
@@ -54,11 +55,12 @@ function step1par(jday)
       %       wapfiles{iwp,1} = [wp(iwp).name(1:i270)];
       %   endif
    endfor
+
    %---GRG----
 
    % Initialize variables based on dh8_instruments
    for idh8 = 1:length(dh8_instruments)
-       % create structures where data will be stored for all instruments
+       % create structures where data will be stored for all instruments		
        switch dh8_instruments{idh8} 
            case 'acs'
                %-------------------------------------
@@ -77,7 +79,7 @@ function step1par(jday)
                acs2.raw = bindata_new(strdate, acsNoWL2*2);
                acs2.anc = bindata_new(strdate, 5);
            case 'ac9'
-               ac9.raw = bindata_new(strdate, 9*2); 
+               ac9.raw = bindata_new(strdate, 9*2)
            case 'bb3'
                bb3.counts = bindata_new(strdate, 3);
            case 'cstar'
@@ -87,7 +89,7 @@ function step1par(jday)
            case 'clam'
                clam = bindata_new(strdate,10);
            otherwise
-               error('Please add the proper case tho have the instrument processed')
+               error('Please add the proper case to have the instrument processed')
                keyboard
        endswitch
    endfor
