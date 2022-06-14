@@ -8,32 +8,32 @@ warning('off');
 
 %-----------------------------
 CRUISE = 'AMT28';
-%WAP_ROOT = lower(CRUISE); % tjor: `root' part of WAP file 
+% WAP_ROOT = lower(CRUISE); % tjor: `root' part of WAP file 
 WAP_ROOT = strcat(lower(CRUISE),'b'); % tjor: `root' part of WAP file for <With_AC9_Without_ACS
 %-----------------------------
 % Variables to be changed during cruise according to specific setups and user needs
 %
-% Dates
+% Date
 % Set date interval to be processed (format is 'yyyymmdd')
 % (this will have to be changed each time the scripts are run)
 % first day of cruise = 20180925, jday=268: 'With_AC9/'  
 % day of switch to default config = 20180927, jday=270: '/' 
 % day of ACS switch = 20181019, jday=292': 'With_AC9_Without_ACS/'
- inidate = '20181020';
- enddate = '20181025';
+inidate = '20181024';
+enddate = '20181025';
 %inidate = '20180925';
-%enddate = '20180930';
+%enddate = '20180926';
 
 % Hour of the day for which Wapped files are searched
 % (day is not processed if a file for the specified hour is not found)
 % Format is '0HH'
-WAPhour = '005'; % tjor: `processes all days with XXth hour of data present'
+WAPhour = '010'; % tjor: `processes all days with XXth hour of data present'
 
 % Underway subdirectory where to find special wapped data
 % Leave with simple / if no special case
 UWAY_WAP_SUBDIR = 'With_AC9_Without_ACS/'; 
-% UWAY_WAP_SUBDIR = 'With_AC9/'; 
-% UWAY_WAP_SUBDIR = '/'; 
+ %UWAY_WAP_SUBDIR = 'With_AC9/'; 
+%UWAY_WAP_SUBDIR = '/'; 
 
 % Parameters specific for Underway plotting/processing
 % (this will change depending on specific section fo the cruise)

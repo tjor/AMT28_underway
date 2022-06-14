@@ -6,7 +6,7 @@ function step1par(jday)
    din = [PATH_DATA UWAY_DIR];
    wapdir = [din DATA_WAPPED UWAY_WAP_SUBDIR]
    flowdir = [din,DATA_FLOW];
-   savedir = [OUT_PROC UWAY_DIR 'Step1/' UWAY_WAP_SUBDIR];
+   savedir = [OUT_PROC UWAY_DIR 'Step1/'];
 
    % Create directory if it does not exists
    if ~exist(savedir,'dir')
@@ -29,7 +29,7 @@ function step1par(jday)
    %
    % % Load savefile if it already exists
    % if exist(savefile)
-   %    load(savefile)
+   %   load(savefile)
    % endif
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -202,6 +202,16 @@ function step1par(jday)
     % ------------------------------------------------------------------------
     % Save data to MAT file for future use
     % ------------------------------------------------------------------------
+   if (exist(savefile,"file"))
+            tmp_WAPvars = load(savefile);
+            % Check if file is different by comparing the index of first available ctd measure
+            if min(find(~isnan(WAPvars.ctd.mean(:,1)))) != min(find(~isnan(tmp_WAPvars.WAPvars.ctd.mean(:,1))))
+                % If file not the same, then merge the two
+                WAPvars = merge_WAPvars(WAPvars,tmp_WAPvars.WAPvars);
+            endif
+        endif
+
+
     disp(['Saving',savefile])
     save('-v6', savefile, 'WAPvars')
     disp('Done!')
@@ -210,30 +220,30 @@ function step1par(jday)
     % In case UWAY_WAP_SUBDIR is not the root directory, core measurements need 
     % to be also saved on root directory
     %-------------------------------------------------------------------------
-    if ~strcmp(UWAY_WAP_SUBDIR,'/')
-        if strfind(UWAY_WAP_SUBDIR,'ACS')
+   % if ~strcmp(UWAY_WAP_SUBDIR,'/')
+    %    if strfind(UWAY_WAP_SUBDIR,'ACS')
             % removed acs2 from variables
-            WAPvars = rmfield(WAPvars,'acs2');
-        elseif strfind(UWAY_WAP_SUBDIR,'AC9')
+      %      WAPvars = rmfield(WAPvars,'acs2');
+     %   elseif strfind(UWAY_WAP_SUBDIR,'AC9')
             % removed ac9 from variables
-            WAPvars = rmfield(WAPvars,'ac9');
-        endif
+       %     WAPvars = rmfield(WAPvars,'ac9');
+        %endif
         % New file name in root directory
-        savedir = [OUT_PROC UWAY_DIR];
-        savefile = [savedir, fproc_name , doy, '.mat'];
+        %savedir = [OUT_PROC UWAY_DIR];
+        %savefile = [savedir, fproc_name , doy, '.mat'];
         % Need to check if file exists
-        if (exist(savefile,"file"))
-            tmp_WAPvars = load(savefile);
+        %if (exist(savefile,"file"))
+         %   tmp_WAPvars = load(savefile);
             % Check if file is different by comparing the index of first available ctd measure
-            if min(find(~isnan(WAPvars.ctd.mean(:,1)))) != min(find(~isnan(tmp_WAPvars.WAPvars.ctd.mean(:,1))))
+          %  if min(find(~isnan(WAPvars.ctd.mean(:,1)))) != min(find(~isnan(tmp_WAPvars.WAPvars.ctd.mean(:,1))))
                 % If file not the same, then merge the two
-                WAPvars = merge_WAPvars(WAPvars,tmp_WAPvars.WAPvars);
-            endif
-        endif
-        disp(['Saving root file ',savefile])
-        save('-v6', savefile, 'WAPvars')
-        disp('Done!')
-    endif
+            %    WAPvars = merge_WAPvars(WAPvars,tmp_WAPvars.WAPvars);
+           % endif
+        %endif
+        %disp(['Saving root file ',savefile])
+        %save('-v6', savefile, 'WAPvars')
+        %disp('Done!')
+    %endif
 
     clear wapfiles
     

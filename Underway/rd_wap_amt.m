@@ -223,7 +223,7 @@ function WAPvars = rd_wap_amt(flowdir, filename, fileext, dh8_instruments, dh8_p
    % 11000    08/20/06    23:00:12.200
    % 12000    08/20/06    23:00:13.200
 
-   fn19 = ls([filename clockname '.' fileext]);
+   fn19 = ls([filename clockname '.' fileext])
    tmp_fn19 = dir(fn19);
 
    if tmp_fn19.bytes>0
