@@ -21,13 +21,13 @@ enddate = '20180929';
 % Hour of the day for which Wapped files are searched
 % (day is not processed if a file for the specified hour is not found)
 % Format is '0HH'
-WAPhour = '015';
+WAPhour = '015'; % tjor: `processes all days with 15th hour of data present'
 
 % Underway subdirectory where to find special wapped data
 % Leave with simple / if no special case
-%UWAY_WAP_SUBDIR = 'With_AC9_Without_ACS/'; 
+% UWAY_WAP_SUBDIR = 'With_AC9_Without_ACS/'; 
 UWAY_WAP_SUBDIR = 'With_AC9/'; 
-%UWAY_WAP_SUBDIR = '/'; 
+% UWAY_WAP_SUBDIR = '/'; 
 
 % Parameters specific for Underway plotting/processing
 % (this will change depending on specific section fo the cruise)
@@ -35,19 +35,19 @@ UWAY_WAP_SUBDIR = 'With_AC9/';
 %
 % Implemented instruments to selct from are 
 % {'ctd','acs','bb3','cstar','acs2','ac9','clam'}
-if UWAY_WAP_SUBDIR == 'With_AC9_Without_ACS/'
+if strcmp (UWAY_WAP_SUBDIR, 'With_AC9_Without_ACS/') == 1
     dh8_instruments = {'ac9','bb3','cstar','cdt'}
     % Ports must corresponds to same ports as in dh8_instruments
     dh8_ports = {1,2,3,4}; 
     % Serial numbers are mainly needed for acs and ac9 config files, leave blank for other instruments
     dh8_serialnumber = {227,1173,1426,[]},
-elseif UWAY_WAP_SUBDIR == 'With_AC9/' % tjor: selects subdirectory with AC9
+elseif strcmp(UWAY_WAP_SUBDIR, 'With_AC9/') == 1 % tjor: selects subdirectory with AC9
     dh8_instruments = {'acs','bb3','ac9', 'cdt'};
     % Ports must corresponds to same ports as in dh8_instruments
     dh8_ports = {1,2,3,4}; 
     % Serial numbers are mainly needed for acs and ac9 config files, leave blank for other instruments
     dh8_serialnumber = {122,1173,227,[]}
-elseif UWAY_WAP_SUBDIR == '/' % tjor: this is the `default' config (i.e. without subdirectories inside WAP_extracted)
+elseif strcmp(UWAY_WAP_SUBDIR, '/') == 1 % tjor: this is the `default' config (i.e. without subdirectories inside WAP_extracted)
     dh8_instruments = {'ctd','acs','cstar','bb3'};
     % Ports must corresponds to same ports as in dh8_instruments
     dh8_ports = {4,1,3,2}; 
