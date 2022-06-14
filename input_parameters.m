@@ -15,8 +15,8 @@ WAP_ROOT = lower(CRUISE); % tjor: `root' part of WAP file
 % Dates
 % Set date interval to be processed (format is 'yyyymmdd')
 % (this will have to be changed each time the scripts are run)
-inidate = '20180928';
-enddate = '20180929';
+inidate = '20180925'; % first day of cruise = 20180925, jday=268
+enddate = '20180930';
 
 % Hour of the day for which Wapped files are searched
 % (day is not processed if a file for the specified hour is not found)
@@ -36,13 +36,13 @@ UWAY_WAP_SUBDIR = 'With_AC9/';
 % Implemented instruments to selct from are 
 % {'ctd','acs','bb3','cstar','acs2','ac9','clam'}
 if strcmp (UWAY_WAP_SUBDIR, 'With_AC9_Without_ACS/') == 1
-    dh8_instruments = {'ac9','bb3','cstar','cdt'}
+    dh8_instruments = {'ac9','bb3','cstar','ctd'};
     % Ports must corresponds to same ports as in dh8_instruments
     dh8_ports = {1,2,3,4}; 
     % Serial numbers are mainly needed for acs and ac9 config files, leave blank for other instruments
     dh8_serialnumber = {227,1173,1426,[]},
 elseif strcmp(UWAY_WAP_SUBDIR, 'With_AC9/') == 1 % tjor: selects subdirectory with AC9
-    dh8_instruments = {'acs','bb3','ac9', 'cdt'};
+    dh8_instruments = {'acs','bb3','ac9', 'ctd'};
     % Ports must corresponds to same ports as in dh8_instruments
     dh8_ports = {1,2,3,4}; 
     % Serial numbers are mainly needed for acs and ac9 config files, leave blank for other instruments
