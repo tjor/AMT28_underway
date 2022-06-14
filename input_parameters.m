@@ -25,9 +25,9 @@ WAPhour = '015';
 
 % Underway subdirectory where to find special wapped data
 % Leave with simple / if no special case
-% UWAY_WAP_SUBDIR = 'withACS167/'; 
-% UWAY_WAP_SUBDIR = 'withAC9277/'; 
-UWAY_WAP_SUBDIR = '/'; 
+%UWAY_WAP_SUBDIR = 'With_AC9_Without_ACS/'; 
+UWAY_WAP_SUBDIR = 'With_AC9/'; 
+%UWAY_WAP_SUBDIR = '/'; 
 
 % Parameters specific for Underway plotting/processing
 % (this will change depending on specific section fo the cruise)
@@ -36,12 +36,12 @@ UWAY_WAP_SUBDIR = '/';
 % Implemented instruments to selct from are 
 % {'ctd','acs','bb3','cstar','acs2','ac9','clam'}
 if UWAY_WAP_SUBDIR == 'With_AC9_Without_ACS/'
-    dh8_instruments = {'ac9','bb3','cstar','cdt')
+    dh8_instruments = {'ac9','bb3','cstar','cdt'}
     % Ports must corresponds to same ports as in dh8_instruments
     dh8_ports = {1,2,3,4}; 
     % Serial numbers are mainly needed for acs and ac9 config files, leave blank for other instruments
     dh8_serialnumber = {227,1173,1426,[]},
-elseif UWAY_WAP_SUBDIR == 'With_AC9/' % tjor: selects subdirector with AC9
+elseif UWAY_WAP_SUBDIR == 'With_AC9/' % tjor: selects subdirectory with AC9
     dh8_instruments = {'acs','bb3','ac9', 'cdt'};
     % Ports must corresponds to same ports as in dh8_instruments
     dh8_ports = {1,2,3,4}; 
