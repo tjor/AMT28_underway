@@ -1,65 +1,54 @@
 %function tmp = step2_uway();
    % Compute bio-physical quantities from optical data
-
+ 
    clear all
    PLOT = 1;
 
    % Load paths and common variables
    run('../input_parameters.m')
-   global din = [OUT_PROC UWAY_DIR 'Step1/'];
-   global proc_dir = [din '../Step2/'];
-   global gps_dir = PATH_GPS;
-   global ts_dir = PATH_TS;
-   % Create path for saving figures
-   global fig_dir = [OUT_FIGS,UWAY_DIR];
-   % Create directories if they do not exists
-   if ~exist(fig_dir,'dir')
-      mkdir(fig_dir);
-   endif
-   if ~exist(proc_dir,'dir')
-      mkdir(proc_dir);
-   endif
-
-
+ 
    % Create date range
    [numdates, strdates, vecdates, jday_in] = get_date_range(inidate,enddate);
 
-   fn_saved = glob([din '*mat']);
+   fn_saved = glob([DIR_STEP1 '*mat']);
 
-   global YYYY = vecdates(1,1); % Assumes all AMT days are within same year!!
+   global YYYY = vecdates(1, 1); % Assumes all AMT days are within same year!! % used as processing Id
 
    % Change first day to process more than just last sampled day 
-   first_day = find_index_strdate_in_glob(fn_saved,sprintf('%d',jday_in(1)));
-   last_day = find_index_strdate_in_glob(fn_saved,sprintf('%d',jday_in(end)));
+   first_day = find_index_strdate_in_glob(fn_saved, sprintf('%d', jday_in(1))); % follows from ini and end dates
+   last_day = find_index_strdate_in_glob(fn_saved, sprintf('%d', jday_in(end)));
 
    % Need to overwrite array of jdays with dates from saved files
    for ifile = 1:length(fn_saved)
-       jdays(ifile) = str2num(strsplit(fn_saved{ifile},'.'){1}(end-2:end));
+       jdays(ifile) = str2num(strsplit(fn_saved{ifile}, '.'){1}(end-2:end)); % creates jday array-define
    endfor
 
-   dailyfiles = dir(  [din '*mat']  );
-
-   first_day = 1;   
+   dailyfiles = dir(  [DIR_STEP1 '*mat']  ); % redundancy with line 27? just different format
+   
+   %first_day = 1;   
    for iday = first_day:last_day
 
         % First process Ship ctd data
         % (needed by bb3 processing)
-        disp('processing SHIP UNDERWAY data...');  
-        step2h_underway_amt27_make_processed(jdays(iday), PATH_TS, ship_uway_fname, CRUISE)  ;%  siccome hai la tua CTD, qui potresti usare la tua T and S.
-        disp('...done\n\n'); 
-
+        disp("\nprocessing SHIPs UNDERWAY data...");  
+        step2h_ships_underway_amt_make_processed(jdays(iday), \
+                DIR_GPS, GLOB_GPS, FN_GPS, FNC_GPS, \
+                DIR_METDATA, GLOB_METDATA, FN_METDATA, FNC_METDATA)  ;%
+        disp("...done\n\n"); 
+        
         disp(dailyfiles(iday).name)
         fflush(stdout);
 
         jday_str = dailyfiles(iday).name(end-6:end-4);
+
         % Load WAPvars
-        load([din dailyfiles(iday).name]);
+        load([DIR_STEP1 dailyfiles(iday).name]);
 
         % Idea is that flow is always there
         % (also needed by ac9 processing)
-        disp('processing Flow data...');  
-        flow = step2f_flow_make_processed(WAPvars.flow,dailyfiles(iday));
-        disp('...done\n\n'); 
+        disp("\nprocessing Flow data...");  
+        flow = step2f_flow_make_processed(WAPvars.flow, dailyfiles(iday));
+        disp("...done\n\n"); 
 
         % Cycle trhough the variables within WAPvars
         instruments = fieldnames(WAPvars);

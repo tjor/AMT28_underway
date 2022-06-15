@@ -37,9 +37,7 @@ function step2h_underway_amt28_make_processed(first_day, last_day, path_ts, ship
       % Identify the date
 %        date_str = datestr(datenum([yr(idin),mm(idin),day(idin)]),'yyyymmdd');
       % Load GPS files
-%        tmp1 = rd_seatech_gga_discovery(date_str);
       tmp1 = rd_seatech_gga([din_anc{idin} '/seatex-gga.ACO']);
-%        tmp2 = rd_oceanlogger_discovery(date_str);
       tmp2 = rd_oceanloggerJCR([din_anc{idin} '/oceanlogger.ACO']);
 
       tmp.time = y0(yr(idin))-1+jday(idin)+[0:1440-1]'/1440; % create daily time vector with one record per minute of the day (24*60=1440)

@@ -7,8 +7,8 @@ function step2h_underway_amt27_make_processed(jdayin, path_ts, ship_uway_fname,C
 
    %din_anc = glob([din '../../Ship_uway/ancillary/' num2str(YYYY) '*']);
    % Get total files saved (uses Surfmetv3; GPS and TSG will have same number of files)
-   din_anc = glob([path_ts num2str(YYYY) ship_uway_fname]);
-
+   din_anc = glob([path_ts '*' num2str(YYYY) ship_uway_fname]);
+ keyboard
    % Get date and convert to jday
    yr = str2num(cell2mat(din_anc)(:,end-39:end-36));
    mm = str2num(cell2mat(din_anc)(:,end-35:end-34));
@@ -39,7 +39,7 @@ function step2h_underway_amt27_make_processed(jdayin, path_ts, ship_uway_fname,C
    % Identify the date
    date_str = datestr(datenum([yr(idin),mm(idin),day(idin)]),'yyyymmdd');
    % Load GPS files
-   tmp1 = rd_seatech_gga_discovery(date_str);
+   tmp1 = rd_seatech_gga_discovery(date_str); % tjor - function thas
    %tmp1 = rd_seatech_gga([din_anc{idin} '/seatex-gga.ACO']);
    tmp2 = rd_oceanlogger_discovery(date_str);
    %tmp2 = rd_oceanloggerJCR([din_anc{idin} '/oceanlogger.ACO']);

@@ -8,7 +8,7 @@ warning('off');
 
 %-----------------------------
 CRUISE = 'AMT28';
-% WAP_ROOT = lower(CRUISE); % tjor: `root' part of WAP file 
+%WAP_ROOT = lower(CRUISE); % tjor: `root' part of WAP file 
 WAP_ROOT = strcat(lower(CRUISE),'b'); % tjor: `root' part of WAP file for <With_AC9_Without_ACS
 %-----------------------------
 % Variables to be changed during cruise according to specific setups and user needs
@@ -18,21 +18,21 @@ WAP_ROOT = strcat(lower(CRUISE),'b'); % tjor: `root' part of WAP file for <With_
 % (this will have to be changed each time the scripts are run)
 % first day of cruise = 20180925, jday=268: 'With_AC9/'  
 % day of switch to default config = 20180927, jday=270: '/' 
-% day of ACS switch = 20181019, jday=292': 'With_AC9_Without_ACS/'
-inidate = '20181024';
-enddate = '20181025';
-%inidate = '20180925';
-%enddate = '20180926';
+% day of ACS switch = 20181019, jday=292': 'With_AC9_Without_ACS/'%
+inidate = '20180926';
+enddate = '20180927';
+%inidate = '20181015';
+%enddate = '20181025';
 
 % Hour of the day for which Wapped files are searched
 % (day is not processed if a file for the specified hour is not found)
 % Format is '0HH'
-WAPhour = '010'; % tjor: `processes all days with XXth hour of data present'
+WAPhour = '012'; % tjor: `processes all days with 0XXth hour of data present'
 
 % Underway subdirectory where to find special wapped data
 % Leave with simple / if no special case
 UWAY_WAP_SUBDIR = 'With_AC9_Without_ACS/'; 
- %UWAY_WAP_SUBDIR = 'With_AC9/'; 
+%UWAY_WAP_SUBDIR = 'With_AC9/'; 
 %UWAY_WAP_SUBDIR = '/'; 
 
 % Parameters specific for Underway plotting/processing
@@ -46,13 +46,13 @@ if strcmp (UWAY_WAP_SUBDIR, 'With_AC9_Without_ACS/') == 1 % tjor: selects `bfile
     % Ports must corresponds to same ports as in dh8_instruments
     dh8_ports = {1,2,3,4}; 
     % Serial numbers are mainly needed for acs and ac9 config files, leave blank for other instruments
-    dh8_serialnumber = {227,1173,1426,[]},
+    dh8_serialnumber = {227,1173,1426,[]};
 elseif strcmp(UWAY_WAP_SUBDIR, 'With_AC9/') == 1 % tjor: selects subdirectory with AC9
     dh8_instruments = {'acs','bb3','ac9', 'ctd'};
     % Ports must corresponds to same ports as in dh8_instruments
     dh8_ports = {1,2,3,4}; 
     % Serial numbers are mainly needed for acs and ac9 config files, leave blank for other instruments
-    dh8_serialnumber = {122,1173,227,[]}
+    dh8_serialnumber = {122,1173,227,[]};
 elseif strcmp(UWAY_WAP_SUBDIR, '/') == 1 % tjor: this is the `default' config (i.e. without subdirectories inside WAP_extracted)
     dh8_instruments = {'ctd','acs','cstar','bb3'};
     % Ports must corresponds to same ports as in dh8_instruments
@@ -65,12 +65,13 @@ endif
 %-----------------------------
 % Paths
 #MAIN_PATH = '/users/rsg/tjor/scratch_network/AMT_underway/AMT28/';
-MAIN_PATH = '/data/abitibi1/scratch/scratch_disk/tjor/AMT_underway/AMT28/';
-% MAIN_PATH = [MAIN_PATH,'/Data/',CRUISE,'/'];     % Root directory for current AMT cruise
-PATH_DATA = [MAIN_PATH,'Data/'];        % Directory with all raw and wapped data
-PATH_SOURCE = [MAIN_PATH,'Source/'];% Directory with all source code
-OUT_PROC = [MAIN_PATH,'Processed/'];    % Output directory for processed oct and mat files
-OUT_FIGS = [MAIN_PATH,'Figures/'];      % Output directory for figures
+#MAIN_PATH = '/data/abitibi1/scratch/scratch_disk/tjor/AMT_underway/AMT28/';
+MAIN_PATH = '/tom/AMT_underway/AMT28/';
+% MAIN_PATH = [MAIN_PATH, '/Data/', CRUISE,'/'];     % Root directory for current AMT cruise
+PATH_DATA = [MAIN_PATH, 'Data/'];        % Directory with all raw and wapped data
+PATH_SOURCE = [MAIN_PATH, 'Source/'];% Directory with all source code
+OUT_PROC = [MAIN_PATH, 'Processed/'];    % Output directory for processed oct and mat files
+OUT_FIGS = [MAIN_PATH, 'Figures/'];      % Output directory for figures
 
 addpath([PATH_SOURCE]);
 %-----------------------------
@@ -86,12 +87,6 @@ DATA_RAW = 'Raw/';
 DATA_FLOW = 'Flow/';
 DATA_WITH_BB3 = 'with_BB3/';
 %-----------------------------
-% Ship's system directories
-PATH_SHIP = [PATH_DATA,'Ship_uway/']; %tjor - ships meteorological data
-PATH_TS = [PATH_SHIP,'Compress/']; % Directory with ship underway ctd
-PATH_GPS = [PATH_SHIP,'GPS/']; % Directory with ship gps
-ship_uway_fname = '*Surf-DY-SM_DY1*'; % Name of ship underway system files
-%-----------------------------
 % calibration file dir
 D_CAL_FILES = [PATH_DATA, UWAY_DIR, 'Calibration_files/'];
 
@@ -99,6 +94,55 @@ D_CAL_FILES = [PATH_DATA, UWAY_DIR, 'Calibration_files/'];
 % ACS calibration file
 ACS_CAL_FILE_NAME = 'acs122_20180923.dev'; %tjor -remove hardcorded filename from get_acs_NoWL.m
 %-----------------------------
+
+
+
+%-----------------------------
+% Ship's system directories
+PATH_SHIP = [PATH_DATA, 'Ship_uway/']; %tjor - ships meteorological data
+PATH_TS = [PATH_SHIP, 'Compress/']; % Directory with ship underway ctd
+
+#----------------------------
+# Input parameters for ship's underway data
+
+DIR_GPS = PATH_TS;
+GLOB_GPS = "2018\*";
+FN_GPS = "seatex-gga.ACO";
+FNC_GPS = @rd_seatech_gga; # this function should be inside Source/Underway
+
+DIR_METDATA = PATH_TS;
+GLOB_METDATA = "2018\*";
+FN_METDATA = "oceanlogger.ACO";
+FNC_METDATA = @rd_oceanloggerJCR; # this function should be inside Source/Underway
+
+#----------------------------
+
+
+# Path-related variables for step2
+global DIR_STEP1 = [OUT_PROC UWAY_DIR 'Step1/'];
+global DIR_STEP2 = [OUT_PROC UWAY_DIR 'Step2/'];
+global FN_ROOT_STEP2 = [DIR_STEP2 'proc_optics_' lower(CRUISE) '_'];
+
+
+
+% Create path for saving figures
+#   global fig_dir = [OUT_FIGS, UWAY_DIR];
+DIR_FIGS = [OUT_FIGS, UWAY_DIR];
+
+% Create directories if they do not exists
+   if ~exist(DIR_FIGS, 'dir')
+      mkdir(DIR_FIGS);
+   endif
+
+   if ~exist(DIR_STEP2, 'dir')
+      mkdir(DIR_STEP2);
+   endif
+
+
+
+
+
+
 
 %-----------------------------
 % Parameters specific for Optics rig plotting/processing
