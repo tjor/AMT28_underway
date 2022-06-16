@@ -6,8 +6,8 @@ function flow = step2f_flow_make_processed(flow, dailyfile)
 
    % check if instrument variable exists in WAPvars
    savefile = [FN_ROOT_STEP2 strsplit(dailyfile.name, "_"){end}];
-   if (exist(savefile))
-      load(savefile)
+   if exist(savefile, 'file')
+      load(savefile);
    endif
    
    out.flow = flow;
