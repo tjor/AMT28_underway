@@ -5,6 +5,8 @@ struct_levels_to_print(0);
 
 warning('off');
 
+# set octave's graphics_toolkit to the one that works...
+graphics_toolkit('gnuplot');
 
 %-----------------------------
 CRUISE = 'AMT28';
@@ -87,6 +89,8 @@ DATA_WAPPED = 'WAP_extracted/';
 DATA_RAW = 'Raw/';
 DATA_FLOW = 'Flow/';
 DATA_WITH_BB3 = 'with_BB3/';
+
+
 %-----------------------------
 % calibration file dir
 D_CAL_FILES = [PATH_DATA, UWAY_DIR, 'Calibration_files/'];
@@ -129,7 +133,7 @@ global FN_ROOT_STEP2 = [DIR_STEP2 'proc_optics_' lower(CRUISE) '_'];
 
 % Create path for saving figures
 #   global fig_dir = [OUT_FIGS, UWAY_DIR];
-DIR_FIGS = [OUT_FIGS, UWAY_DIR];
+global DIR_FIGS = [OUT_FIGS, UWAY_DIR];
 
 % Create directories if they do not exists
    if ~exist(DIR_FIGS, 'dir')
