@@ -1,13 +1,14 @@
 %cost function to retrieve DT
-function out=f_Ts(DTs)
-global a b refNIR NIR 
+function out = f_Ts(DTs)
+
+global a b i_refNIR i_NIR 
 global Yt Ysa
 
 
-ref=find(NIR==refNIR);
+i_ref = find(i_NIR == i_refNIR);
 
-
- out=sum(abs(     a-Yt*DTs(1) - ( a(ref)-Yt(ref)*DTs(1) )*b./b(ref)     ));   %w/o salinity
+# DTs is \DeltaT
+out = sum(abs(     a - Yt*DTs(1) - ( a(i_ref) - Yt(i_ref)*DTs(1) )*b./b(i_ref)     )); # eq 6 in Slade et al., 2010;   %w/o salinity
 
 
 

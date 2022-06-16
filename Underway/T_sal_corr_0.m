@@ -1,19 +1,22 @@
-function [DTs, aTbcorr, ap_err, cp_err ] = T_sal_corr_0(acs, idays, nn, iap)
+# Implement Salde et al (2010) scattering and residual temperature corrections
+# and propagate uncertainties
+function [DTs, aTbcorr, ap_err, cp_err ] = T_sal_corr_0(acs, idays, i_nn, iap)
 
 global dac2dTS
 global Yt Ysa
-global a b refNIR NIR 
+global a b i_refNIR i_NIR 
 global fval
 global errO
 
 global DIR_FIGS
 
-refNIR = find(acs.wl>=730,1);  %reference wavelength in the NIR (730nm)
-NIR = find(acs.wl>=710 & acs.wl<=740);  %spectral range for optimization (710:740nm)
-Yt = dac2dTS(NIR,2)';
-s_Yt = dac2dTS(NIR,3)'./sqrt(4);  %see Sullivan et al 2006
-Ysa = dac2dTS(NIR,6)';
-s_Ysa = dac2dTS(NIR,7)';
+i_refNIR = find(acs.wl>=730,1);  % index of reference wavelength in the NIR (730nm)
+i_NIR = find(acs.wl>=710 & acs.wl<=740);  % indices of spectral range for optimization (710:740nm)
+
+Yt = dac2dTS(i_NIR,2)'; # Yt = Psi_t (the T-dependence coeffs of pure H2O absorption ) in Slade et al 2010
+s_Yt = dac2dTS(i_NIR,3)'./sqrt(4);  % see Sullivan et al 2006 (this is the uncertainty of Yt)
+Ysa = dac2dTS(i_NIR,6)'; # this is the salinity dependence of pure H2O absorption
+s_Ysa = dac2dTS(i_NIR,7)'; # uncertainty of Ysa
 
 
 
@@ -23,12 +26,12 @@ s_Ysa = dac2dTS(NIR,7)';
 
 
 
-    %apply Tsb-correction to each spectrum(1:nn)
+    %apply Tsb-correction to each spectrum(1:i_nn)
 
-    if (acs.int.ap(nn(iap),NIR(1))~=NaN & acs.int.bp(nn(iap),NIR(1))~=NaN)
+    if (acs.int.ap(i_nn(iap),i_NIR(1))~=NaN & acs.int.bp(i_nn(iap),i_NIR(1))~=NaN)
         
-        a = acs.int.ap(nn(iap),NIR);
-        b = acs.int.bp(nn(iap),NIR);
+        a = acs.int.ap(i_nn(iap),i_NIR);
+        b = acs.int.bp(i_nn(iap),i_NIR);
 
 
         %-----------------------------------------------
@@ -88,20 +91,20 @@ s_Ysa = dac2dTS(NIR,7)';
         %                 function has failed to converge.
         %-----------------------------------------------
 
-        % run minimisation to find DTs
-        [DTs, fval] = fminsearch(@f_Ts, [0]);   %without salinity
+        % run minimisation to find DTs, which is \DeltaT in Slade et al 2010
+        [DTs, fval] = fminsearch(@f_Ts, [0]);    %without salinity
         
         % apply correction to ap
-        aTbcorr = acs.int.ap(nn(iap),:)      -dac2dTS(:,2)'    *DTs(1)  - ...
-                                     (  acs.int.ap(nn(iap),refNIR) -dac2dTS(refNIR,2)*DTs(1)  ) * ... 
-                                      acs.int.bp(nn(iap),:)/acs.int.bp(nn(iap),refNIR);
+        aTbcorr = acs.int.ap(i_nn(iap),:)      -dac2dTS(:,2)'    *DTs(1)  - ...
+                                     (  acs.int.ap(i_nn(iap),i_refNIR) -dac2dTS(i_refNIR,2)*DTs(1)  ) * ... 
+                                      acs.int.bp(i_nn(iap),:)/acs.int.bp(i_nn(iap),i_refNIR); # eq 5 in Slade et al., 2010
             
         % compute uncertainties
-        [ap_err, cp_err] = acp_err(  acs.int.ap(nn(iap),:),     acs.int.cp(nn(iap),:), ...
+        [ap_err, cp_err] = acp_err(  acs.int.ap(i_nn(iap),:),     acs.int.cp(i_nn(iap),:), ...
                                      DTs(1),          dac2dTS(:,2), ...
-                                     acs.int.ap_u(nn(iap),:),   acs.int.cp_u(nn(iap),:), ...
+                                     acs.int.ap_u(i_nn(iap),:),   acs.int.cp_u(i_nn(iap),:), ...
                                      DTs(1)*0.5,     dac2dTS(:,3), ...
-                                     refNIR, ...
+                                     i_refNIR, ...
                                      iap,...
                                      acs);
 

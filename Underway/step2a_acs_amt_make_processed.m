@@ -81,12 +81,12 @@ function acsout = step2a_acs_amt_make_processed(acs, dailyfile, idays, acs_lim, 
    xTF = 8;  % how many 0.2um filtered points we have
    n_wv = length(acs.awl);
 
-   tmp_fi_a = acs.raw.med(i_fl,1:n_wv)';
+   tmp_fi_a = acs.raw.med(i_fl,1:n_wv)'; # this is for the absorption
    tmp_fi_a = reshape(tmp_fi_a,n_wv,xTF,size(acs.raw.med(i_fl,1:n_wv),1)/xTF);
    med_fi_a = median(tmp_fi_a,2);
-   med_fi_a = reshape(med_fi_a, n_wv,size(acs.raw.med(i_fl,1:n_wv),1)/xTF)';
+   med_fi_a = reshape(med_fi_a, n_wv,size(acs.raw.med(i_fl,1:n_wv),1)/xTF)'; # hourly absorption medians of the first 10 minutes of every hour
 
-   tmp_fi_c = acs.raw.med(i_fl,n_wv+1:end)';
+   tmp_fi_c = acs.raw.med(i_fl,n_wv+1:end)'; # and this is for the attenuation
    tmp_fi_c = reshape(tmp_fi_c,n_wv,xTF,size(acs.raw.med(i_fl,n_wv+1:end),1)/xTF);
    med_fi_c = median(tmp_fi_c,2);
    med_fi_c = reshape(med_fi_c, n_wv,size(acs.raw.med(i_fl,n_wv+1:end),1)/xTF)';
@@ -96,7 +96,7 @@ function acsout = step2a_acs_amt_make_processed(acs, dailyfile, idays, acs_lim, 
    tmp_fi_a_u = acs.raw.prc(i_fl, 1:n_wv)';
    tmp_fi_a_u = reshape(tmp_fi_a_u, n_wv, xTF, size(acs.raw.prc(i_fl,1:n_wv),1)/xTF);
    med_fi_a_u = median(tmp_fi_a_u, 2);
-   med_fi_a_u = reshape(med_fi_a_u, n_wv, size(acs.raw.prc(i_fl,1:n_wv),1)/xTF)';
+   med_fi_a_u = reshape(med_fi_a_u, n_wv, size(acs.raw.prc(i_fl,1:n_wv),1)/xTF)'; # hourly absorption robust-std medians of the fist 10 minutes of every hour
 
    tmp_fi_c_u = acs.raw.prc(i_fl, n_wv+1:end)';
    tmp_fi_c_u = reshape(tmp_fi_c_u, n_wv, xTF, size(acs.raw.prc(i_fl,n_wv+1:end),1)/xTF);
@@ -104,19 +104,19 @@ function acsout = step2a_acs_amt_make_processed(acs, dailyfile, idays, acs_lim, 
    med_fi_c_u = reshape(med_fi_c_u, n_wv,size(acs.raw.prc(i_fl,n_wv+1:end),1)/xTF)';
 
 
-   %store filtered data
+   %store filtered data (DO NOT CONFUSE with read ay measurements: these are just the filtered signals)
    acs.cdom.a = med_fi_a;
    acs.cdom.time = time(i_fl_med);
 
-   % Linear interpolation between filtered measurements and their uncertainties
-   acs.afilt_i = interp1(time(i_fl_med), med_fi_a, time, 'extrap');
+   % Linear interpolation over the course of the day between filtered measurements and their uncertainties
+   acs.afilt_i = interp1(time(i_fl_med), med_fi_a, time, 'extrap'); # extrap is just to fill in the last hour of the day
    acs.cfilt_i = interp1(time(i_fl_med), med_fi_c, time, 'extrap');
   
    acs.afilt_u_i = interp1(time(i_fl_med), med_fi_a_u, time, 'extrap');
    acs.cfilt_u_i = interp1(time(i_fl_med), med_fi_c_u, time, 'extrap');
    
    % Define and fill [a,c]tot variables and their uncertainties
-   acs.atot = nan(size(acs.raw.med(:,1:n_wv)));
+   acs.atot = nan(size(acs.raw.med(:,1:n_wv))); # these are the total absorption coeffiients (i.e.,  not the particulate absorption coeeffs)
    acs.ctot = nan(size(acs.raw.med(:,n_wv+1:end)));
    acs.atot(i_uf,:) = acs.raw.med(i_uf,1:n_wv);
    acs.ctot(i_uf,:) = acs.raw.med(i_uf,n_wv+1:end);
@@ -137,7 +137,7 @@ function acsout = step2a_acs_amt_make_processed(acs, dailyfile, idays, acs_lim, 
    endif
 
    % Calibration-independent particle optical properties
-   acs.ap = acs.atot - acs.afilt_i;
+   acs.ap = acs.atot - acs.afilt_i; # this is what is plotted in Fig 3a of Slade et al., 2010 (ap is particulate absorption)
    acs.cp = acs.ctot - acs.cfilt_i;
 
    % propagate uncertainties
@@ -233,35 +233,35 @@ function acsout = step2a_acs_amt_make_processed(acs, dailyfile, idays, acs_lim, 
    %     acs.ap_nostep = acs.ap;
    %     acs.ap_nostep(:,1:wv1-1) = acs.ap_nostep(:,1:wv1-1)+acs.step.ap.diff*ones(1,wv1-1);
 
-   acs.cp_nostep = acs.cp;
+   acs.cp_nostep = acs.cp; # previously there was an extra step to correct for spectral discontinuity (see commented part above), this is if due to the linear filter of the ACs which is divided into two parts (see ACs manual or documentation)
    acs.cp_nostep_u = acs.cp_u;
    acs.ap_nostep = acs.ap;
    acs.ap_nostep_u = acs.ap_u;
 
    % ---GRG---
    % select only non-NaN points
-   nn = ~isnan(acs.cp(:,1));
+   i_nn = ~isnan(acs.cp(:,1));
    
    % ---GRG---
-   % interpolate awl and cwl to match the band centers of a and c
+   % interpolate awl and cwl to match the band centers of a and c onto a common wavelength array (acs.wl)
    acs.wl = [400:2:750];
 
    %interpolate cp
    acs.int.cp = acs.int.cp_u = nan(size(acs.cp,1), length(acs.wl));
-   acs.int.cp(nn,:) = interp1(acs.cwl, acs.cp_nostep(nn,:)', acs.wl, 'extrap')';
-   acs.int.cp_u(nn,:) = interp1(acs.cwl, acs.cp_nostep_u(nn,:)', acs.wl, 'extrap')';
+   acs.int.cp(i_nn,:) = interp1(acs.cwl, acs.cp_nostep(i_nn,:)', acs.wl, 'extrap')';
+   acs.int.cp_u(i_nn,:) = interp1(acs.cwl, acs.cp_nostep_u(i_nn,:)', acs.wl, 'extrap')';
    
    %interpolate ap
    acs.int.ap = acs.int.ap_u = nan(size(acs.ap,1), length(acs.wl));
-   acs.int.ap(nn,:) = interp1(acs.awl, acs.ap_nostep(nn,:)', acs.wl, 'extrap')';    %NOTE that the first lambda od acs.awl and acs.cwl are > 400nm  => the first interpolated wv is =NaN
-   acs.int.ap_u(nn,:) = interp1(acs.awl, acs.ap_nostep_u(nn,:)', acs.wl, 'extrap')';    %NOTE that the first lambda od acs.awl and acs.cwl are > 400nm  => the first interpolated wv is =NaN
+   acs.int.ap(i_nn,:) = interp1(acs.awl, acs.ap_nostep(i_nn,:)', acs.wl, 'extrap')';    %NOTE that the first lambda od acs.awl and acs.cwl are > 400nm  => the first interpolated wv is =NaN
+   acs.int.ap_u(i_nn,:) = interp1(acs.awl, acs.ap_nostep_u(i_nn,:)', acs.wl, 'extrap')';    %NOTE that the first lambda od acs.awl and acs.cwl are > 400nm  => the first interpolated wv is =NaN
 
    % % ----GRG------
-   %correction of for residual T-dependence
+   %correction of for residual T-dependence (this is the correction described in the Slade et al 2010 paper)
    %find( abs(acs.int.ap(:,171)-acs.int.ap(:,152))>0 );
-   nn = find(~isnan(acs.int.ap(:,171)));
+   i_nn = find(~isnan(acs.int.ap(:,1))); # "1" is arbitrary and "nn" is just used to initialize arrays below 
    
-   acs.Tsb_corr.ap = nan(size(acs.int.ap));
+   acs.Tsb_corr.ap = nan(size(acs.int.ap)); # in "Tsb", "T" is for temperature, "s" for salinity and "b" is for scattering
    acs.Tsb_corr.cp = nan(size(acs.int.cp));
    acs.Tsb_corr.ap_u = nan(size(acs.int.ap));
    acs.Tsb_corr.cp_u = nan(size(acs.int.cp));
@@ -271,20 +271,20 @@ function acsout = step2a_acs_amt_make_processed(acs, dailyfile, idays, acs_lim, 
 
    if idays>0
       %compute initial guess for the scattering coefficient b   (WE ASSUME no SALINITY CHANGES, FOR THE MOMENT)
-      acs.int.bp = acs.int.cp - acs.int.ap;
+      acs.int.bp = acs.int.cp - acs.int.ap; # eq 2 in Slade et al., 2010
 
-      DTs = zeros(length(nn),1);
-      s_DTs_up = zeros(length(nn),2);
-      s_DTs_dw = zeros(length(nn),2);
+      DTs = zeros(length(i_nn),1);
+      s_DTs_up = zeros(length(i_nn),2);
+      s_DTs_dw = zeros(length(i_nn),2);
 
       %   for iap=362:length(nn)  %use these spectra for example
-      for iap = 1:length(nn)
+      for iap = 1:length(i_nn) 
 
-         [DTs(iap,:), aTbcorr, ap_err, cp_err] = T_sal_corr_0(acs, idays, nn, iap);
+         [DTs(iap,:), aTbcorr, ap_err, cp_err] = T_sal_corr_0(acs, idays, i_nn, iap);
          iout = [idays, iap DTs(iap)];
 
-         acs.Tsb_corr.ap(nn(iap),:) = aTbcorr;
-         acs.Tsb_corr.ap_u(nn(iap),:) = ap_err;
+         acs.Tsb_corr.ap(i_nn(iap),:) = aTbcorr;
+         acs.Tsb_corr.ap_u(i_nn(iap),:) = ap_err;
 
          if acstype == 'acs'
              save iap.txt iout -ascii
@@ -293,8 +293,8 @@ function acsout = step2a_acs_amt_make_processed(acs, dailyfile, idays, acs_lim, 
          endif
 
          %compute T-corrected beam-c (i.e. subtract from cp the DELTAap due to residual temperature difference)
-         acs.Tsb_corr.cp(nn(iap),:) = acs.int.cp(nn(iap),:)     -dac2dTS(:,2)'*DTs(iap,1)  ;
-         acs.Tsb_corr.cp_u(nn(iap),:) = cp_err;
+         acs.Tsb_corr.cp(i_nn(iap),:) = acs.int.cp(i_nn(iap),:)     -dac2dTS(:,2)'*DTs(iap,1)  ; # first non-numbered equation on pg 1739 of Slade et al., 2010
+         acs.Tsb_corr.cp_u(i_nn(iap),:) = cp_err;
 
       endfor
 
@@ -314,22 +314,24 @@ function acsout = step2a_acs_amt_make_processed(acs, dailyfile, idays, acs_lim, 
    acs.Tsb_corr.bp_u = sqrt(acs.Tsb_corr.ap_u.^2 + acs.Tsb_corr.cp_u.^2);
 
 
-   acs.Tsb_corr.nn = nn;
+   acs.Tsb_corr.nn = i_nn;
    acs.Tsb_corr.time = time;
    acs.Tsb_corr.wl = acs.wl;
 
    savefile = [FN_ROOT_STEP2 strsplit(dailyfile.name, "_"){end}];
 
-   if (exist(savefile))
+   if exist(savefile, 'file')
       load(savefile);
    endif
 
    if acstype == 'acs'
        out.acs = acs.Tsb_corr;
        out.acs.wv = acs.wl;
+
    elseif acstype == 'acs2'
        out.acs2 = acs.Tsb_corr;
        out.acs2.wv = acs.wl;
+
    endif
 
    save('-v6', savefile , 'out' )
