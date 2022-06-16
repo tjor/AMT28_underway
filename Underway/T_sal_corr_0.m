@@ -6,7 +6,7 @@ global a b refNIR NIR
 global fval
 global errO
 
-
+global DIR_FIGS
 
 refNIR = find(acs.wl>=730,1);  %reference wavelength in the NIR (730nm)
 NIR = find(acs.wl>=710 & acs.wl<=740);  %spectral range for optimization (710:740nm)
@@ -127,7 +127,7 @@ function [ap_err, cp_err] = acp_err(ap0,   cp0,   DT,   PSI,   ...
                                    iap,...
                                    acs) 
 
-global fig_dir                           
+global DIR_FIGS                           
                            
 PSI = PSI(:)';
 PSI_u = PSI_u(:)';
@@ -196,7 +196,7 @@ if iap == 1000
    ylim([0, 0.03])
    grid('on')
    set(gca, 'gridlinestyle', '--') 
-   fnout = [fig_dir, 'ap_var_budget_', datestr(acs.raw.time(iap), "YYYYmmdd"), '.png'];
+   fnout = [DIR_FIGS, 'ap_var_budget_', datestr(acs.raw.time(iap), "YYYYmmdd"), '.png'];
    print('-dpng', fnout)
    close all   
 endif
@@ -239,7 +239,7 @@ if iap == 1000
    ylim([0, 0.2])
    grid('on')
    set(gca, 'gridlinestyle', '--') 
-   fnout = [fig_dir, 'cp_var_budget_', datestr(acs.raw.time(iap), "YYYYmmdd"), '.png'];
+   fnout = [DIR_FIGS, 'cp_var_budget_', datestr(acs.raw.time(iap), "YYYYmmdd"), '.png'];
    print('-dpng', fnout)
    close all   
 endif
