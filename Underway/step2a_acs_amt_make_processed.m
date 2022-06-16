@@ -1,7 +1,7 @@
 %load acs data and process them using calibration independent technique (filter/NOfilter)
 % and a NIR-base correction for residual temperature dependence
 
-function acsout = step2a_acs_amt_make_processed(acs, dailyfile, idays, acs_lim, force, acstype)
+function acsout = step2a_acs_amt_make_processed(acs, dailyfile, idays, acs_lim, FORCE, acstype)
 
    global dac2dTS
    global Yt Ysa
@@ -43,7 +43,7 @@ function acsout = step2a_acs_amt_make_processed(acs, dailyfile, idays, acs_lim, 
 
 
    % this is to skip ACs processng or when there are no ACs data
-   if (force!=1 & (~exist('acs')) |  all(isnan(acs.raw.med(:,1))))
+   if (FORCE != 1 & (~exist('acs')) |  all(isnan(acs.raw.med(:,1))))
       keyboard
       return     
    endif

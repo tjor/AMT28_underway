@@ -1,7 +1,7 @@
 %load ac9 data and process them using calibration independent technique (filter/NOfilter)
 % and a NIR-base correction for residual temperature dependence
 
-function step2a_ac9_amt_make_processed(ac9, dailyfile, ac9_lim, force, flow)
+function step2a_ac9_amt_make_processed(ac9, dailyfile, ac9_lim, FORCE, flow)
 
    % Global variables from step2
    global FN_ROOT_STEP2 
@@ -30,13 +30,13 @@ function step2a_ac9_amt_make_processed(ac9, dailyfile, ac9_lim, force, flow)
 
 
     % this is to skip AC9 processng or when there are no AC9 data
-    if (force!=1 & (~exist('ac9')) |  all(isnan(ac9.raw.med(:,1))))
+    if (FORCE != 1 & (~exist('ac9')) |  all(isnan(ac9.raw.med(:,1))))
         continue
     endif
       
 
     %ac9.raw
-    time = ac9.raw.time-newT0;
+    time = ac9.raw.time - newT0;
 
     
     % Determine times for filtered and unfiltered measurements to be used in
