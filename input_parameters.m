@@ -65,8 +65,8 @@ endif
 %-----------------------------
 % Paths
 #MAIN_PATH = '/users/rsg/tjor/scratch_network/AMT_underway/AMT28/';
-#MAIN_PATH = '/data/abitibi1/scratch/scratch_disk/tjor/AMT_underway/AMT28/';
-MAIN_PATH = '/tom/AMT_underway/AMT28/';
+MAIN_PATH = '/data/abitibi1/scratch/scratch_disk/tjor/AMT_underway/AMT28/';
+%MAIN_PATH = '/tom/AMT_underway/AMT28/';
 % MAIN_PATH = [MAIN_PATH, '/Data/', CRUISE,'/'];     % Root directory for current AMT cruise
 PATH_DATA = [MAIN_PATH, 'Data/'];        % Directory with all raw and wapped data
 PATH_SOURCE = [MAIN_PATH, 'Source/'];% Directory with all source code

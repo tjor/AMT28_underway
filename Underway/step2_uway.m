@@ -49,7 +49,7 @@
         disp("\nprocessing Flow data...");  
         flow = step2f_flow_make_processed(WAPvars.flow, dailyfiles(iday));
         disp("...done\n\n"); 
-
+keyboard
         % Cycle trhough the variables within WAPvars
         instruments = fieldnames(WAPvars);
         for iWAP = 1:length(instruments)

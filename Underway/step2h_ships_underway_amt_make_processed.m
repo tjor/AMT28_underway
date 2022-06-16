@@ -40,7 +40,7 @@ function step2h_ships_underway_amt_make_processed(doy, DIR_GPS, GLOB_GPS, FN_GPS
 
       flds2 = fieldnames(tmp2);
       for ifld2=2:length(flds2) % skips time field
-         tmp.(flds2{ifld2}) = nan(size(tmp.time));i
+         tmp.(flds2{ifld2}) = nan(size(tmp.time));
          if ~isempty(tmp2.time)
             tmp.(flds2{ifld2}) = interp1(tmp2.time, tmp2.(flds2{ifld2}), tmp.time);
          endif
