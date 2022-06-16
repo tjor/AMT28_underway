@@ -31,7 +31,7 @@ function acsout = step2a_acs_amt_make_processed(acs, dailyfile, idays, acs_lim, 
    %% read Excel spreadsheet with temperature and salinity dependence for acs interpolated every 2 nm
    %fnTS = 'C:\Giorgio\Data\From_literature\Water_absorption\Sullivan_etal_2006_instrumentspecific.xls';     %<<<====== CHANGE HERE
    %dac2dTS = xlsread(fnTS);
-   fnTS = 'acs_TSdep.txt';
+   fnTS = 'acs_TSdep.txt'; # Temperature-dependence coefficients
    dac2dTS = load([fnTS]);
 
    Ts = [];
@@ -69,10 +69,10 @@ function acsout = step2a_acs_amt_make_processed(acs, dailyfile, idays, acs_lim, 
    tmp_sched = time;
    tmp_time_min = round(tmp_time(:,5)+tmp_time(:,6)/60);
 
-   tm_fl = (ismember(tmp_time_min, [2:9]) & tmp_sched) ;  %filtered times                                      %<<<====== CHANGE HERE
-   tm_uf = (ismember(tmp_time_min, [11:58]) & tmp_sched);  %unfiltered times                                   %<<<====== CHANGE HERE
+   i_fl = (ismember(tmp_time_min, [2:9]) & tmp_sched) ;  % assign index to filtered times                                      %<<<====== CHANGE HERE
+   i_uf = (ismember(tmp_time_min, [11:58]) & tmp_sched);  % assign index to unfiltered times                                   %<<<====== CHANGE HERE
 
-   tm_fl_med = (ismember(tmp_time_min, [5]) & tmp_sched) ;  %filtered times to be used for correction            %<<<====== CHANGE HERE
+   i_fl_med = (ismember(tmp_time_min, [5]) & tmp_sched) ;  % assign index to filtered times to be used for correction            %<<<====== CHANGE HERE
 
    
    
@@ -81,50 +81,50 @@ function acsout = step2a_acs_amt_make_processed(acs, dailyfile, idays, acs_lim, 
    xTF = 8;  % how many 0.2um filtered points we have
    n_wv = length(acs.awl);
 
-   tmp_fi_a = acs.raw.med(tm_fl,1:n_wv)';
-   tmp_fi_a = reshape(tmp_fi_a,n_wv,xTF,size(acs.raw.med(tm_fl,1:n_wv),1)/xTF);
+   tmp_fi_a = acs.raw.med(i_fl,1:n_wv)';
+   tmp_fi_a = reshape(tmp_fi_a,n_wv,xTF,size(acs.raw.med(i_fl,1:n_wv),1)/xTF);
    med_fi_a = median(tmp_fi_a,2);
-   med_fi_a = reshape(med_fi_a, n_wv,size(acs.raw.med(tm_fl,1:n_wv),1)/xTF)';
+   med_fi_a = reshape(med_fi_a, n_wv,size(acs.raw.med(i_fl,1:n_wv),1)/xTF)';
 
-   tmp_fi_c = acs.raw.med(tm_fl,n_wv+1:end)';
-   tmp_fi_c = reshape(tmp_fi_c,n_wv,xTF,size(acs.raw.med(tm_fl,n_wv+1:end),1)/xTF);
+   tmp_fi_c = acs.raw.med(i_fl,n_wv+1:end)';
+   tmp_fi_c = reshape(tmp_fi_c,n_wv,xTF,size(acs.raw.med(i_fl,n_wv+1:end),1)/xTF);
    med_fi_c = median(tmp_fi_c,2);
-   med_fi_c = reshape(med_fi_c, n_wv,size(acs.raw.med(tm_fl,n_wv+1:end),1)/xTF)';
+   med_fi_c = reshape(med_fi_c, n_wv,size(acs.raw.med(i_fl,n_wv+1:end),1)/xTF)';
 
 
    % take median also of the within-bin variability of a and c
-   tmp_fi_a_u = acs.raw.prc(tm_fl, 1:n_wv)';
-   tmp_fi_a_u = reshape(tmp_fi_a_u, n_wv, xTF, size(acs.raw.prc(tm_fl,1:n_wv),1)/xTF);
+   tmp_fi_a_u = acs.raw.prc(i_fl, 1:n_wv)';
+   tmp_fi_a_u = reshape(tmp_fi_a_u, n_wv, xTF, size(acs.raw.prc(i_fl,1:n_wv),1)/xTF);
    med_fi_a_u = median(tmp_fi_a_u, 2);
-   med_fi_a_u = reshape(med_fi_a_u, n_wv, size(acs.raw.prc(tm_fl,1:n_wv),1)/xTF)';
+   med_fi_a_u = reshape(med_fi_a_u, n_wv, size(acs.raw.prc(i_fl,1:n_wv),1)/xTF)';
 
-   tmp_fi_c_u = acs.raw.prc(tm_fl, n_wv+1:end)';
-   tmp_fi_c_u = reshape(tmp_fi_c_u, n_wv, xTF, size(acs.raw.prc(tm_fl,n_wv+1:end),1)/xTF);
+   tmp_fi_c_u = acs.raw.prc(i_fl, n_wv+1:end)';
+   tmp_fi_c_u = reshape(tmp_fi_c_u, n_wv, xTF, size(acs.raw.prc(i_fl,n_wv+1:end),1)/xTF);
    med_fi_c_u = median(tmp_fi_c_u, 2);
-   med_fi_c_u = reshape(med_fi_c_u, n_wv,size(acs.raw.prc(tm_fl,n_wv+1:end),1)/xTF)';
+   med_fi_c_u = reshape(med_fi_c_u, n_wv,size(acs.raw.prc(i_fl,n_wv+1:end),1)/xTF)';
 
 
    %store filtered data
    acs.cdom.a = med_fi_a;
-   acs.cdom.time = time(tm_fl_med);
+   acs.cdom.time = time(i_fl_med);
 
    % Linear interpolation between filtered measurements and their uncertainties
-   acs.afilt_i = interp1(time(tm_fl_med), med_fi_a, time, 'extrap');
-   acs.cfilt_i = interp1(time(tm_fl_med), med_fi_c, time, 'extrap');
+   acs.afilt_i = interp1(time(i_fl_med), med_fi_a, time, 'extrap');
+   acs.cfilt_i = interp1(time(i_fl_med), med_fi_c, time, 'extrap');
   
-   acs.afilt_u_i = interp1(time(tm_fl_med), med_fi_a_u, time, 'extrap');
-   acs.cfilt_u_i = interp1(time(tm_fl_med), med_fi_c_u, time, 'extrap');
+   acs.afilt_u_i = interp1(time(i_fl_med), med_fi_a_u, time, 'extrap');
+   acs.cfilt_u_i = interp1(time(i_fl_med), med_fi_c_u, time, 'extrap');
    
    % Define and fill [a,c]tot variables and their uncertainties
    acs.atot = nan(size(acs.raw.med(:,1:n_wv)));
    acs.ctot = nan(size(acs.raw.med(:,n_wv+1:end)));
-   acs.atot(tm_uf,:) = acs.raw.med(tm_uf,1:n_wv);
-   acs.ctot(tm_uf,:) = acs.raw.med(tm_uf,n_wv+1:end);
+   acs.atot(i_uf,:) = acs.raw.med(i_uf,1:n_wv);
+   acs.ctot(i_uf,:) = acs.raw.med(i_uf,n_wv+1:end);
    
    acs.atot_u = nan(size(acs.raw.prc(:,1:n_wv)));
    acs.ctot_u = nan(size(acs.raw.prc(:,n_wv+1:end)));
-   acs.atot_u(tm_uf,:) = acs.raw.prc(tm_uf,1:n_wv) ./ sqrt(acs.raw.N(tm_uf,1:n_wv)) ; % note that I am dividing the uncertainty by sqrt(N)
-   acs.ctot_u(tm_uf,:) = acs.raw.prc(tm_uf,n_wv+1:end) ./ sqrt(acs.raw.N(tm_uf,n_wv+1:end)); % note that I am dividing the uncertainty by sqrt(N)
+   acs.atot_u(i_uf,:) = acs.raw.prc(i_uf,1:n_wv) ./ sqrt(acs.raw.N(i_uf,1:n_wv)) ; % note that I am dividing the uncertainty by sqrt(N)
+   acs.ctot_u(i_uf,:) = acs.raw.prc(i_uf,n_wv+1:end) ./ sqrt(acs.raw.N(i_uf,n_wv+1:end)); % note that I am dividing the uncertainty by sqrt(N)
    
 
    % compute approximate coefficient of variation within the binning time 
@@ -157,9 +157,9 @@ function acsout = step2a_acs_amt_make_processed(acs, dailyfile, idays, acs_lim, 
       plot(acs.raw.time-newT0+1, acs.raw.mean(:,iwv0)+acs.raw.prc(:,iwv0), '.', 'MarkerSize', 1, 'linewidth', 0.1)
       plot(acs.raw.time-newT0+1, acs.raw.mean(:,iwv0)-acs.raw.prc(:,iwv0), '.', 'MarkerSize', 1, 'linewidth', 0.1)
       
-      plot(acs.raw.time(tm_fl)-newT0+1, acs.raw.mean(tm_fl,iwv0), 'ro', 'linewidth', 0.5)
-      plot(acs.raw.time(tm_fl)-newT0+1, acs.raw.mean(tm_fl,iwv0)+acs.raw.prc(tm_fl,iwv0), 'r.', 'linewidth', 0.1)
-      plot(acs.raw.time(tm_fl)-newT0+1, acs.raw.mean(tm_fl,iwv0)-acs.raw.prc(tm_fl,iwv0), 'r.', 'linewidth', 0.1)
+      plot(acs.raw.time(i_fl)-newT0+1, acs.raw.mean(i_fl,iwv0), 'ro', 'linewidth', 0.5)
+      plot(acs.raw.time(i_fl)-newT0+1, acs.raw.mean(i_fl,iwv0)+acs.raw.prc(i_fl,iwv0), 'r.', 'linewidth', 0.1)
+      plot(acs.raw.time(i_fl)-newT0+1, acs.raw.mean(i_fl,iwv0)-acs.raw.prc(i_fl,iwv0), 'r.', 'linewidth', 0.1)
       
       plot(acs.raw.time-newT0+1, acs.afilt_i(:,iwv0), 'k', 'linewidth', 0.5)
       plot(acs.raw.time-newT0+1, acs.afilt_u_i(:,iwv0), 'k', 'linewidth', 0.1)
@@ -186,7 +186,7 @@ function acsout = step2a_acs_amt_make_processed(acs, dailyfile, idays, acs_lim, 
    clf
    hold on
       plot(acs.raw.time-newT0+1, acs.raw.mean(:,iwv0+n_wv), '.', 'MarkerSize', 6, 'linewidth', 0.5)
-      plot(acs.raw.time(tm_fl)-newT0+1, acs.raw.mean(tm_fl,iwv0+n_wv), 'ro', 'linewidth', 0.5)
+      plot(acs.raw.time(i_fl)-newT0+1, acs.raw.mean(i_fl,iwv0+n_wv), 'ro', 'linewidth', 0.5)
       plot(acs.raw.time-newT0+1, acs.cfilt_i(:,iwv0), 'k', 'linewidth', 0.5)
       plot(acs.raw.time-newT0+1, acs.cp(:,iwv0)+.2, 'mo', 'MarkerSize', 2, 'linewidth', 0.5)
    %axis([188 189 0 .25])
