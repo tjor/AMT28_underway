@@ -65,8 +65,9 @@ endif
 %-----------------------------
 % Paths
 #MAIN_PATH = '/users/rsg/tjor/scratch_network/AMT_underway/AMT28/';
-MAIN_PATH = '/data/abitibi1/scratch/scratch_disk/tjor/AMT_underway/AMT28/';
-%MAIN_PATH = '/tom/AMT_underway/AMT28/';
+#MAIN_PATH = '/data/abitibi1/scratch/scratch_disk/tjor/AMT_underway/AMT28/'; disp("\n\n-----------THIS IS FOR TOM----------\n\n"); fflush(stdout);
+#MAIN_PATH = '/tom/AMT_underway/AMT28/'; disp("\n\n---------THIS IS FOR GIORGIO---------\n\n"); fflush(stdout);
+MAIN_PATH = '/fast_scratch/AMT28/'; disp("\n\n---------THIS IS FOR GIORGIO---------\n\n"); fflush(stdout);
 % MAIN_PATH = [MAIN_PATH, '/Data/', CRUISE,'/'];     % Root directory for current AMT cruise
 PATH_DATA = [MAIN_PATH, 'Data/'];        % Directory with all raw and wapped data
 PATH_SOURCE = [MAIN_PATH, 'Source/'];% Directory with all source code
@@ -106,7 +107,7 @@ PATH_TS = [PATH_SHIP, 'Compress/']; % Directory with ship underway ctd
 # Input parameters for ship's underway data
 # 
 # here we assume that the ship's uway data are always stored in daily folders called YYYYDOY (e.g., 2018290) 
-DIR_GP = PATH_TS;
+DIR_GPS = PATH_TS;
 GLOB_GPS = "2018\*";
 FN_GPS = "seatex-gga.ACO";
 FNC_GPS = @rd_seatech_gga; # this function should be inside Source/Underway
