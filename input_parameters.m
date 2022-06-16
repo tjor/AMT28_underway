@@ -104,8 +104,9 @@ PATH_TS = [PATH_SHIP, 'Compress/']; % Directory with ship underway ctd
 
 #----------------------------
 # Input parameters for ship's underway data
-
-DIR_GPS = PATH_TS;
+# 
+# here we assume that the ship's uway data are always stored in daily folders called YYYYDOY (e.g., 2018290) 
+DIR_GP = PATH_TS;
 GLOB_GPS = "2018\*";
 FN_GPS = "seatex-gga.ACO";
 FNC_GPS = @rd_seatech_gga; # this function should be inside Source/Underway

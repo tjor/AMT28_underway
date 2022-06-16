@@ -27,11 +27,10 @@ function step2h_ships_underway_amt_make_processed(doy, DIR_GPS, GLOB_GPS, FN_GPS
       tmp2 = FNC_METDATA([din_met{1} '/' FN_METDATA]);
 
       % create daily time vector with one record per minute of the day (24*60=1440)
-      tmp.time = y0(YYYY)-1 + doy + [0:1440-1]'/1440;
-      
+      tmp.time = y0(YYYY)-1 + doy + [0:1440-1]'/1440; # time vector to match 1-min binned optics data 
+
       %interpolate underway data to one-minute samples
       flds1 = fieldnames(tmp1);
-
       for ifld1=2:length(flds1) % skips time field
          tmp.(flds1{ifld1}) = nan(size(tmp.time));
          if ~isempty(tmp1.time)
