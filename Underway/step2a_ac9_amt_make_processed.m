@@ -1,20 +1,20 @@
 %load ac9 data and process them using calibration independent technique (filter/NOfilter)
 % and a NIR-base correction for residual temperature dependence
 
-function step2a_ac9_amt_make_processed(WAPvars.ac9, dailyfile, ac9_lim, force, flow)
+function step2a_ac9_amt_make_processed(ac9, dailyfile, ac9_lim, force, flow)
 
    % Global variables from step2
-   global din
-   global proc_dir
-   global fig_dir
+   global FN_ROOT_STEP2 
+   global DIR_STEP2
+   global DIR_FIGS
    global YYYY
    
     close all
 
     tic
 
-   if ~exist(proc_dir)
-      mkdir(proc_dir);
+   if ~exist(DIR_STEP2)
+      mkdir(DIR_STEP2);
    endif
 
 
@@ -144,7 +144,7 @@ function step2a_ac9_amt_make_processed(WAPvars.ac9, dailyfile, ac9_lim, force, f
     set(gca, 'ylim', ac9_lim);
     title('raw a_p')
     hold off
-    fnout = [fig_dir 'raw_ap_ac9_' dailyfile.name(end-6:end-4)  '.png'];
+    fnout = [DIR_FIGS 'raw_ap_ac9_' dailyfile.name(end-6:end-4)  '.png'];
     print('-dpng', fnout)
 
     figure(2, 'visible', 'off')
@@ -158,12 +158,12 @@ function step2a_ac9_amt_make_processed(WAPvars.ac9, dailyfile, ac9_lim, force, f
     set(gca, 'ylim', ac9_lim);
     title('raw c_p')
     hold off    
-    fnout = [fig_dir 'raw_cp_ac9_' dailyfile.name(end-6:end-4)  '.png'];
+    fnout = [DIR_FIGS 'raw_cp_ac9_' dailyfile.name(end-6:end-4)  '.png'];
     print('-dpng', fnout)
 
 
     
-    savefile = [proc_dir,'proc_',dailyfile.name];
+    savefile = [FN_ROOT_STEP2 strsplit(dailyfile.name, "_"){end}];
     if (exist(savefile))
        load(savefile)
     endif    
