@@ -100,9 +100,8 @@ function [bb_3, bb_02, bb_err, ...
 
    %%%%% extract temperature and salinity from underway data to compute beta_sw             
    %% NOTE: at this point of the processing, the underway time is one day ahead of the time of the optics               
-   Salinity = interp1(uway.time - y0(YYYY), uway.sal, time);   
-   SST = interp1(uway.time - y0(YYYY), uway.sst, time);
-   % stop
+   Salinity = uway.sal;   
+   SST = uway.sst;
  
    %initialize structure for results
    bb3.bbp = nan(size((bb3.counts.mean)));
