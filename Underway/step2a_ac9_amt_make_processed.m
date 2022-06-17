@@ -1,5 +1,5 @@
 %load ac9 data and process them using calibration independent technique (filter/NOfilter)
-% and a NIR-base correction for residual temperature dependence
+# follows ACs processing, but without uncertainty propagation
 
 function step2a_ac9_amt_make_processed(ac9, dailyfile, ac9_lim, FORCE, flow)
 
@@ -42,10 +42,10 @@ function step2a_ac9_amt_make_processed(ac9, dailyfile, ac9_lim, FORCE, flow)
     tmp_sched = time;
     tmp_time_min = round(tmp_time(:,5)+tmp_time(:,6)/60);
 
-    tm_fl = (ismember(tmp_time_min, [2:9]) & tmp_sched) ;  %filtered times                                      %<<<====== CHANGE HERE
-    tm_uf = (ismember(tmp_time_min, [11:58]) & tmp_sched);  %unfiltered times                                   %<<<====== CHANGE HERE
+    i_fl = (ismember(tmp_time_min, [2:9]) & tmp_sched) ;  %filtered times                                      %<<<====== CHANGE HERE
+    i_uf = (ismember(tmp_time_min, [11:58]) & tmp_sched);  %unfiltered times                                   %<<<====== CHANGE HERE
 
-    tm_fl_med=(ismember(tmp_time_min, [5]) & tmp_sched) ;  %filtered times to be used for correction            %<<<====== CHANGE HERE
+    i_fl_med=(ismember(tmp_time_min, [5]) & tmp_sched) ;  %filtered times to be used for correction            %<<<====== CHANGE HERE
 
     
 
@@ -53,25 +53,25 @@ function step2a_ac9_amt_make_processed(ac9, dailyfile, ac9_lim, FORCE, flow)
     xTF = 8;  % how many 0.2um filtered points we have
     n_wv = length(wave);
 
-    tmp_fi_a = ac9.raw.med(tm_fl,1:n_wv)';
-    tmp_fi_a = reshape(tmp_fi_a,n_wv,xTF,size(ac9.raw.med(tm_fl,1:n_wv),1)/xTF);
+    tmp_fi_a = ac9.raw.med(i_fl,1:n_wv)';
+    tmp_fi_a = reshape(tmp_fi_a,n_wv,xTF,size(ac9.raw.med(i_fl,1:n_wv),1)/xTF);
     med_fi_a = median(tmp_fi_a,2);
-    med_fi_a = reshape(med_fi_a, n_wv,size(ac9.raw.med(tm_fl,1:n_wv),1)/xTF)';
+    med_fi_a = reshape(med_fi_a, n_wv,size(ac9.raw.med(i_fl,1:n_wv),1)/xTF)';
 
-    tmp_fi_c = ac9.raw.med(tm_fl,n_wv+1:end)';
-    tmp_fi_c = reshape(tmp_fi_c,n_wv,xTF,size(ac9.raw.med(tm_fl,n_wv+1:end),1)/xTF);
+    tmp_fi_c = ac9.raw.med(i_fl,n_wv+1:end)';
+    tmp_fi_c = reshape(tmp_fi_c,n_wv,xTF,size(ac9.raw.med(i_fl,n_wv+1:end),1)/xTF);
     med_fi_c = median(tmp_fi_c,2);
-    med_fi_c = reshape(med_fi_c, n_wv,size(ac9.raw.med(tm_fl,n_wv+1:end),1)/xTF)';
+    med_fi_c = reshape(med_fi_c, n_wv,size(ac9.raw.med(i_fl,n_wv+1:end),1)/xTF)';
 
     
     % Linear interpolation between filtered measurements
-    ac9.afilt_i = interp1(time(tm_fl_med), med_fi_a, time, 'extrap');
-    ac9.cfilt_i = interp1(time(tm_fl_med), med_fi_c, time, 'extrap');
+    ac9.afilt_i = interp1(time(i_fl_med), med_fi_a, time, 'extrap');
+    ac9.cfilt_i = interp1(time(i_fl_med), med_fi_c, time, 'extrap');
 
     
     %store filtered data
     ac9.cdom.a = med_fi_a;
-    ac9.cdom.time = time(tm_fl_med);
+    ac9.cdom.time = time(i_fl_med);
     
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -79,7 +79,7 @@ function step2a_ac9_amt_make_processed(ac9, dailyfile, ac9_lim, FORCE, flow)
     % This is specific to AMT28 
     % if strcmp(dailyfile.name, 'optics_amt28_295.mat')
     % 
-    %     [var_filt tm_fl tm_uf] = filt_time_exception_295(ac9.raw, flow_v);
+    %     [var_filt i_fl i_uf] = filt_time_exception_295(ac9.raw, flow_v);
     %     
     %     ac9.afilt_i = var_filt(:,1:n_wv);
     %     ac9.cfilt_i = var_filt(:,n_wv+1:end);
@@ -94,8 +94,8 @@ function step2a_ac9_amt_make_processed(ac9, dailyfile, ac9_lim, FORCE, flow)
     %% Remove filtered data from measurements
     ac9.atot = nan(size(ac9.raw.med(:,1:n_wv)));
     ac9.ctot = nan(size(ac9.raw.med(:,n_wv+1:end)));
-    ac9.atot(tm_uf,:) = ac9.raw.med(tm_uf,1:n_wv);
-    ac9.ctot(tm_uf,:) = ac9.raw.med(tm_uf,n_wv+1:end);
+    ac9.atot(i_uf,:) = ac9.raw.med(i_uf,1:n_wv);
+    ac9.ctot(i_uf,:) = ac9.raw.med(i_uf,n_wv+1:end);
 
   
     
@@ -120,9 +120,9 @@ function step2a_ac9_amt_make_processed(ac9, dailyfile, ac9_lim, FORCE, flow)
 
     %-----  scattering correction  ------
     %--- method #3
-    [ac9.corr.ap, ac9.corr.bp] = scatt_corr_3(ac9.cp, ac9.ap);
+    [ac9.corr.ap, ac9.corr.bp] = scatt_corr_3(ac9.cp, ac9.ap); # this is the measurement equation for ap (error propagation still to do)
 
-    ac9.corr.cp = ac9.cp;  %just to have all the data in the same sub-structure
+    ac9.corr.cp = ac9.cp;  %just to have all the data in the same sub-structure (this is the measurement equation for cp)
     
     
     iwv0 = 3;
@@ -130,7 +130,7 @@ function step2a_ac9_amt_make_processed(ac9, dailyfile, ac9_lim, FORCE, flow)
     clf
     hold on
     plot(ac9.raw.time-newT0+1, ac9.raw.mean(:,iwv0), '.', 'MarkerSize', 6, 'linewidth', 0.5)
-    plot(ac9.raw.time(tm_fl)-newT0+1, ac9.raw.mean(tm_fl,iwv0), 'ro', 'linewidth', 0.5)
+    plot(ac9.raw.time(i_fl)-newT0+1, ac9.raw.mean(i_fl,iwv0), 'ro', 'linewidth', 0.5)
     plot(ac9.raw.time-newT0+1, ac9.afilt_i(:,iwv0), 'k', 'linewidth', 0.5)
     plot(ac9.raw.time-newT0+1, ac9.ap(:,iwv0)+.2, 'mo', 'MarkerSize', 2, 'linewidth', 0.5)
     %axis([188 189 0 .25])
@@ -144,7 +144,7 @@ function step2a_ac9_amt_make_processed(ac9, dailyfile, ac9_lim, FORCE, flow)
     clf
     hold on
     plot(ac9.raw.time-newT0+1, ac9.raw.mean(:,iwv0+n_wv), '.', 'MarkerSize', 6, 'linewidth', 0.5)
-    plot(ac9.raw.time(tm_fl)-newT0+1, ac9.raw.mean(tm_fl,iwv0+n_wv), 'ro', 'linewidth', 0.5)
+    plot(ac9.raw.time(i_fl)-newT0+1, ac9.raw.mean(i_fl,iwv0+n_wv), 'ro', 'linewidth', 0.5)
     plot(ac9.raw.time-newT0+1, ac9.cfilt_i(:,iwv0), 'k', 'linewidth', 0.5)
     plot(ac9.raw.time-newT0+1, ac9.cp(:,iwv0)+.2, 'mo', 'MarkerSize', 2, 'linewidth', 0.5)
     %axis([188 189 0 .25])
