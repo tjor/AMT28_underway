@@ -1,14 +1,12 @@
 function step2f_ctd_make_processed(ctd,dailyfile)
 
    % Global var from step2
-   global din
-   global proc_dir
+   global FN_ROOT_STEP2 
 
 
    % check if instrument variable exists in WAPvars
-   savefile = [proc_dir,'proc_',dailyfile.name];
-
-   if (exist(savefile))
+   savefile = [FN_ROOT_STEP2 strsplit(dailyfile.name, "_"){end}];
+   if exist(savefile, 'file')
       load(savefile)
    endif
    out.ctd = ctd;

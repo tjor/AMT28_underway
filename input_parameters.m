@@ -22,7 +22,7 @@ WAP_ROOT = strcat(lower(CRUISE),"b"); % tjor: `root" part of WAP file for <With_
 % day of switch to default config = 20180927, jday=270: "/" 
 % day of ACS switch = 20181019, jday=292": "With_AC9_Without_ACS/"%
 inidate = "20180926";
-enddate = "20180927";
+enddate = "20181027";
 %inidate = "20181015";
 %enddate = "20181025";
 
@@ -211,15 +211,3 @@ movavg = inline("filter(1/mavgwd*ones(1, mavgwd), 1, x)", "x", "mavgwd"); % this
 
 
 
-##### BB3 parameters that need to be updated for every cruise
-    BB3_DC = [50 42 46];         %dark counts 
-    BB3_DC_err = [1.2 1.2 1.2];  % uncertainties in dark counts
-
-    BB3_SF = [11.0 7.127 2.983 ]*1e-6;  %scaling factors
-       
-    BB3_WV = [470 532 700]; # in principle, this could be read from the BB3 files during step1
-    
-% wall effect 
-    BB3_WE =     [ 3.7029  3.1437  4.2641].*1e-04;
-    BB3_WE_err = [ 0.8327  0.5218  0.2703].*1e-04;  
-     

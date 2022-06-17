@@ -20,21 +20,23 @@
 %% Created: 2015-09-24
 
 function plot_spectra (jday_str, spectra_alim, spectra_clim, chl_lim)
+
    pkg load signal
-   % Global var defined in step2
-   global din
-   global fig_dir
-   global proc_dir
-
    
-   run('../input_parameters.m')
+   % Global var defined in step2
+   global DIR_FIGS
+   global DIR_STEP2
+   global OUT_PROC 
+   global UWAY_DIR
+   
+   #run('../input_parameters.m')
 
-   dout = [fig_dir jday_str '/'];
+   dout = [DIR_FIGS jday_str '/'];
    if ~exist(dout)
       mkdir(dout);
    endif
 
-   fn = ls([proc_dir '*' jday_str '*mat']);
+   fn = ls([DIR_STEP2 '*' jday_str '*mat']);
 
    load(fn)
 
@@ -47,15 +49,12 @@ function plot_spectra (jday_str, spectra_alim, spectra_clim, chl_lim)
 
    
 
-
    if isfield(out, 'acs')
 
-        medap = medfilt1(out.acs.ap, 31);
         figure(1, 'visible', 'off')
         subplot(121)
         for ihr = 0:23
-            % hp = plot(out.acs.wv, medap(1+20+ihr*1440/24, :));
-            hp = plot(out.acs.wv, medap(1+35+ihr*1440/24, :));
+            hp = plot(out.acs.wv, out.acs.ap(1+35+ihr*1440/24, :));
             set(hp, 'linewidth', 3, 'color', cmap(ihr+1,:))
             hold on
         endfor
@@ -75,8 +74,7 @@ function plot_spectra (jday_str, spectra_alim, spectra_clim, chl_lim)
         
         subplot(122)
         for ihr = 0:23
-            % hp = plot(out.acs.wv, medap(1+20+ihr*1440/24, :)./medap(1+20+ihr*1440/24, out.acs.wv==440));
-            hp = plot(out.acs.wv, medap(1+35+ihr*1440/24, :)./medap(1+35+ihr*1440/24, out.acs.wv==440));
+            hp = plot(out.acs.wv, out.acs.ap(1+35+ihr*1440/24, :)./out.acs.ap(1+35+ihr*1440/24, out.acs.wv==440));
             set(hp, 'linewidth', 3, 'color', cmap(ihr+1,:))
             hold on
         endfor
@@ -111,7 +109,8 @@ function plot_spectra (jday_str, spectra_alim, spectra_clim, chl_lim)
     
         #### now plot chl estimate
 
-        chlacs = medfilt1(chlacs(out.acs),11);
+        #chlacs = medfilt1(chlacs(out.acs),11);
+        chlacs = chlacs(out.acs);
 
         close all
         figure(1, 'visible', 'off')
@@ -148,13 +147,13 @@ function plot_spectra (jday_str, spectra_alim, spectra_clim, chl_lim)
     
     if isfield(out, 'ac9')
 
-        medap = medfilt1(out.ac9.ap, 31);
+        #medap = medfilt1(out.ac9.ap, 31);
 
         figure(1, 'visible', 'off')
         subplot(121)
         for ihr = 0:23
             % hp = plot(out.ac9.wv, medap(1+20+ihr*1440/24, :));
-            hp = plot(out.ac9.wv, medap(1+35+ihr*1440/24, :));
+            hp = plot(out.ac9.wv, out.ac9.ap(1+35+ihr*1440/24, :));
             set(hp, 'linewidth', 3, 'color', cmap(ihr+1,:))
             hold on
         endfor
@@ -175,7 +174,7 @@ function plot_spectra (jday_str, spectra_alim, spectra_clim, chl_lim)
         subplot(122)
         for ihr = 0:23
             % hp = plot(out.ac9.wv, medap(1+20+ihr*1440/24, :)./medap(1+20+ihr*1440/24, out.ac9.wv==440));
-            hp = plot(out.ac9.wv, medap(1+35+ihr*1440/24, :)./medap(1+35+ihr*1440/24, out.ac9.wv==440));
+            hp = plot(out.ac9.wv, out.ac9.ap(1+35+ihr*1440/24, :)./out.ac9.ap(1+35+ihr*1440/24, out.ac9.wv==440));
             set(hp, 'linewidth', 3, 'color', cmap(ihr+1,:))
             hold on
         endfor
@@ -210,7 +209,7 @@ function plot_spectra (jday_str, spectra_alim, spectra_clim, chl_lim)
     
         #### now plot chl estimate
 
-        chlac9 = medfilt1(chlac9(out.ac9.ap),11);
+        chlac9 = chlac9(out.ac9.ap);
 
         close all
         figure(1, 'visible', 'off')
@@ -244,21 +243,25 @@ function plot_spectra (jday_str, spectra_alim, spectra_clim, chl_lim)
         fnout = [dout 'chl_' jday_str '_AC9.png'];
         print('-dpng', fnout)
         
-         #save file with chl estimates 
-        outchl = [out.ac9.time+1 chlac9*chlACs2AC9_median_prcrng(1)];
-        fnout = [dout 'chl_' jday_str '_AC9.dat'];
-        save("-ascii", fnout, "outchl");     
-        
+        if exist(fnACs2AC9)
+           #save file with chl estimates 
+           outchl = [out.ac9.time+1 chlac9*chlACs2AC9_median_prcrng(1)];
+           fnout = [dout 'chl_' jday_str '_AC9.dat'];
+           save("-ascii", fnout, "outchl");     
+        endif        
         
     endif
     
     
     
-    
-    
-    if isfield(out, 'acs') & isfield(out, 'ac9')
-    
+   if isfield(out, 'acs') & isfield(out, 'ac9') & ...
+           ~all(isnan(out.acs.ap(:,10))) & ~all(isnan(out.ac9.ap(:, 1))) 
+
         chlratio = chlacs./chlac9;
+
+        if all(isnan(chlratio))
+            continue
+        endif
 
         close all
         figure(1, 'visible', 'off')
