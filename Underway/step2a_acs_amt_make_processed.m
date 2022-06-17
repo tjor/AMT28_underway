@@ -346,7 +346,6 @@ function acsout = step2a_acs_amt_make_processed(acs, dailyfile, idays, acs_lim, 
         acsout.cp = acsoutcp(:,2:end);
    endif
 
-   toc
 end
 
 
