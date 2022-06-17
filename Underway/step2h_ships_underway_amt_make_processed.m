@@ -1,4 +1,4 @@
-function step2h_ships_underway_amt_make_processed(doy, DIR_GPS, GLOB_GPS, FN_GPS, FNC_GPS, DIR_METDATA, GLOB_METDATA, FN_METDATA, FNC_METDATA)
+function tmp = step2h_ships_underway_amt_make_processed(doy, DIR_GPS, GLOB_GPS, FN_GPS, FNC_GPS, DIR_METDATA, GLOB_METDATA, FN_METDATA, FNC_METDATA)
 
    global YYYY
    global DIR_STEP1

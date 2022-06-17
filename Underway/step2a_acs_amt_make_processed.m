@@ -178,7 +178,6 @@ function acsout = step2a_acs_amt_make_processed(acs, dailyfile, idays, acs_lim, 
    elseif acstype == 'acs2'
        fnout = [DIR_FIGS 'raw_ap_acs2_' dailyfile.name(end-6:end-4)  '.png'];
    endif
-   fnout
    print('-dpng', fnout)
 
 

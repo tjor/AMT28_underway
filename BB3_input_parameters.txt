@@ -1,0 +1,24 @@
+##### BB3 parameters that need to be updated for every cruise
+# WARNING: all the values below are inappropriate for this cruise, but they are used to check that the code is working
+
+   wv  = [470 532 700]; # in principle, this could be read from the BB3 files during step1
+
+## scaling factors (this is "S" in D09)
+# these are tyically derived from pre (and/or post) cruise calibrations 
+   SF = [11.0 7.127 2.983 ]*1e-6;  
+
+
+## dark counts (this is "D" in DallOlmo et al 2009, D09)
+# these are derived from all dark-counts experiments conducted during the cruise
+   DC = [50 42 46];         
+   DC_err = [1.2 1.2 1.2];  % uncertainties in dark counts
+
+    
+## wall effect, this is "b_{b,wall}" in D09
+# this can be derived in two ways:
+# i) until AMT25, from wall-effect experiment(s) (check logbook)
+# ii) from AMT26, from MilliQ measurements taken for aCDOM (i.e., ay) after the BB3 meter and its chamber were cleaned
+   WE =     [ 3.7029  3.1437  4.2641].*1e-04;    
+   WE_err = [ 0.8327  0.5218  0.2703].*1e-04;  
+     
+

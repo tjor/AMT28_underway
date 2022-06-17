@@ -34,7 +34,7 @@
         % First process Ship ctd data
         % (needed by bb3 processing)
         disp("\nprocessing SHIPs UNDERWAY data...");  
-        step2h_ships_underway_amt_make_processed(jdays(iday), \
+        uway = step2h_ships_underway_amt_make_processed(jdays(iday), \
                 DIR_GPS, GLOB_GPS, FN_GPS, FNC_GPS, \
                 DIR_METDATA, GLOB_METDATA, FN_METDATA, FNC_METDATA)  ;%
         disp("...done\n\n"); 
@@ -42,7 +42,7 @@
 
         jday_str = dailyfiles(iday).name(end-6:end-4);
 
-        % Load WAPvars
+        % Load WAPvars from step1 output file
         load([DIR_STEP1 dailyfiles(iday).name]);
 
         % Idea is that flow is always there
@@ -71,16 +71,11 @@
                    step2a_ac9_amt_make_processed(WAPvars.ac9, dailyfiles(iday), ac9_lim, FORCE=0, flow);
 
 
-               case "bb3"
-                   %------------------------------------------
-                   % load underway ship"s data
-                   load( ls([DIR_STEP2 "*" jday_str "*"]) );
-                   undwy = out.uway;
-                   %------------------------------------------
+## uncomment this when you want to process BB3 data
+#               case "bb3"
+#                   step2b_bb3_amt_make_processed(WAPvars.bb3, uway, dailyfiles(iday), iday, bb_opt_lim, CRUISE);
 
-                   step2b_bb3_amt_make_processed(WAPvars.bb3, undwy, dailyfiles(iday), iday, bb_opt_lim, CRUISE);
 
-keyboard
 #
 #               case "cstar"
 #                   % This requires acs, so check if it is there
@@ -90,8 +85,8 @@ keyboard
 #                       disp("No acs on found! Cstar cannot be processed")
 #                   endif
 #
-               case "ctd"
-                   step2f_ctd_make_processed(WAPvars.ctd, dailyfiles(iday));
+#               case "ctd"
+#                   step2f_ctd_make_processed(WAPvars.ctd, dailyfiles(iday));
 
 #               case "clam"
 #                   disp("Nothing to do with the CLAM")

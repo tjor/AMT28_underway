@@ -44,23 +44,23 @@ UWAY_WAP_SUBDIR = "With_AC9_Without_ACS/";
 % Implemented instruments to selct from are 
 % {"ctd","acs","bb3","cstar","acs2","ac9","clam"}
 if strcmp (UWAY_WAP_SUBDIR, "With_AC9_Without_ACS/") == 1 % tjor: selects `bfiles" for 2018 cruise
-    dh8_instruments = {"ac9","bb3","cstar","ctd"};
+    dh8_instruments = {"ac9", "bb3", "cstar", "ctd"};
     % Ports must corresponds to same ports as in dh8_instruments
     dh8_ports = {1,2,3,4}; 
     % Serial numbers are mainly needed for acs and ac9 config files, leave blank for other instruments
-    dh8_serialnumber = {227,1173,1426,[]};
+    dh8_serialnumber = {227, 1173, 1426,[]};
 elseif strcmp(UWAY_WAP_SUBDIR, "With_AC9/") == 1 % tjor: selects subdirectory with AC9
-    dh8_instruments = {"acs","bb3","ac9", "ctd"};
+    dh8_instruments = {"acs", "bb3", "ac9", "ctd"};
     % Ports must corresponds to same ports as in dh8_instruments
     dh8_ports = {1,2,3,4}; 
     % Serial numbers are mainly needed for acs and ac9 config files, leave blank for other instruments
-    dh8_serialnumber = {122,1173,227,[]};
+    dh8_serialnumber = {122, 1173, 227,[]};
 elseif strcmp(UWAY_WAP_SUBDIR, "/") == 1 % tjor: this is the `default" config (i.e. without subdirectories inside WAP_extracted)
-    dh8_instruments = {"ctd","acs","cstar","bb3"};
+    dh8_instruments = {"ctd", "acs", "cstar", "bb3"};
     % Ports must corresponds to same ports as in dh8_instruments
     dh8_ports = {4,1,3,2}; 
     % Serial numbers are mainly needed for acs and ac9 config files, leave blank for other instruments
-    dh8_serialnumber = {[],122,1426,1173}; 
+    dh8_serialnumber = {[], 122, 1426, 1173}; 
 endif
 %-----------------------------
 
@@ -206,3 +206,20 @@ trans_cp650 = [0.01 0.3];
 % useful functions
 movavg = inline("filter(1/mavgwd*ones(1, mavgwd), 1, x)", "x", "mavgwd"); % this is equivalent to a standard moving average with a window size of mavgwd
 %-----------------------------
+
+
+
+
+
+##### BB3 parameters that need to be updated for every cruise
+    BB3_DC = [50 42 46];         %dark counts 
+    BB3_DC_err = [1.2 1.2 1.2];  % uncertainties in dark counts
+
+    BB3_SF = [11.0 7.127 2.983 ]*1e-6;  %scaling factors
+       
+    BB3_WV = [470 532 700]; # in principle, this could be read from the BB3 files during step1
+    
+% wall effect 
+    BB3_WE =     [ 3.7029  3.1437  4.2641].*1e-04;
+    BB3_WE_err = [ 0.8327  0.5218  0.2703].*1e-04;  
+     

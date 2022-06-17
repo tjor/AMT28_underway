@@ -96,7 +96,6 @@ function [bb_3, bb_02, bb_err, ...
 
 
 
-   keyboard
 
    %%%%% extract temperature and salinity from underway data to compute beta_sw             
    %% NOTE: at this point of the processing, the underway time is one day ahead of the time of the optics               
@@ -114,7 +113,7 @@ function [bb_3, bb_02, bb_err, ...
    bb3.bdgt.DC = nan(size((bb3.counts.mean)));
    bb3.bdgt.WE = nan(size((bb3.counts.mean)));
  
-   %initialize structure for results
+   %initialize structure for results ("Fl" stands for "filtered measurements")
    bb3_Fl.bbp = nan(size((bb3.counts.mean)));
    bb3_Fl.err = nan(size((bb3.counts.mean)));
    bb3_Fl.rel_err = nan(size((bb3.counts.mean)));
@@ -125,7 +124,7 @@ function [bb_3, bb_02, bb_err, ...
    bb3_Fl.bdgt.DC = nan(size((bb3.counts.mean)));
    bb3_Fl.bdgt.WE = nan(size((bb3.counts.mean)));
  
-   %chi factor used
+   %Chi_p factor used
    X = 1.076;    
  
    %    Salinity = 30;
@@ -134,13 +133,13 @@ function [bb_3, bb_02, bb_err, ...
    %compute bbp and its uncertainty
    [bb3.bbp(i_tm_uf,:) bb3.err(i_tm_uf,:) bb3.rel_err(i_tm_uf,:) ...
       bb3.bdgt.X(i_tm_uf,:) bb3.bdgt.SF(i_tm_uf,:) bb3.bdgt.C(i_tm_uf,:) bb3.bdgt.Bw(i_tm_uf,:) bb3.bdgt.DC(i_tm_uf,:) bb3.bdgt.WE(i_tm_uf,:)] =...
-      bb3_err_revised_BB3_1173_st(bb3.counts.mean(i_tm_uf,:), bb3.counts.prc(i_tm_uf,:), X, Salinity(i_tm_uf), SST(i_tm_uf));
+      bb3_err_revised(bb3.counts.mean(i_tm_uf,:), bb3.counts.prc(i_tm_uf,:), X, Salinity(i_tm_uf), SST(i_tm_uf));
  
    %compute bbp and its uncertainty for 0.2um filtered data
    %[bb3_Fl.bbp(i_tm_fl,:) bb3_Fl.err(i_tm_fl,:) bb3_Fl.rel_err(i_tm_fl,:) bb3_Fl.bdgt.X(i_tm_fl,:) bb3_Fl.bdgt.SF(i_tm_fl,:) bb3_Fl.bdgt.C(i_tm_fl,:) bb3_Fl.bdgt.Bw(i_tm_fl,:)] =bb3_err_revised_bb3(bb3.counts.med(i_tm_fl,:), bb3.counts.prc(i_tm_fl,:), X);
    [bb3_Fl.bbp(:,:) bb3_Fl.err(:,:) bb3_Fl.rel_err(:,:) ...
       bb3_Fl.bdgt.X(:,:) bb3_Fl.bdgt.SF(:,:) bb3_Fl.bdgt.C(:,:) bb3_Fl.bdgt.Bw(:,:)] =...
-      bb3_err_revised_BB3_1173_st(bb3.counts.mean(:,:), bb3.counts.prc(:,:), X, Salinity, SST);
+      bb3_err_revised(bb3.counts.mean(:,:), bb3.counts.prc(:,:), X, Salinity, SST);
  
    % %---------------------------------------------------------
    % %----- fit hourly 0.2um filtered data to get the ---------
@@ -150,7 +149,7 @@ function [bb_3, bb_02, bb_err, ...
  
    bb3.time = time;%(i_tm_uf);
    bb3_Fl.time = time;
-   bbp02 = fit_02um_filtered_bbp(t02um, time, bb3_Fl, idays);     % this function is at the end of this script
+   bbp02 = fit_02um_filtered_bbp(t02um, time, bb3_Fl, idays);     % this function is at the end of this script (Fig 2a in D09)
    %---------------------------------------------------------
    %---------------------------------------------------------
    %---------------------------------------------------------
@@ -193,6 +192,15 @@ function [bb_3, bb_02, bb_err, ...
    out.bb3.bbp_corr = bb3.bbp - out.bb3.bbp02um;
  
    save('-v6', savefile , 'out' )
+
+
+
+
+
+
+
+
+# the variables below are used to "check things"
  
    bb_3            = [bb_3;[bb3.time, bb3.bbp]];
    bb_err          = [bb_err;[bb3.time, bb3.err]];    
