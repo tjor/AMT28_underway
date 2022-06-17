@@ -17,8 +17,8 @@ function tmp = step2h_ships_underway_amt_make_processed(doy, DIR_GPS, GLOB_GPS, 
       keyboard()
    endif
 
-   disp([din_gps{1}, "\n" din_met{1}])
-      fflush(stdout);
+#   disp([din_gps{1}, "\n" din_met{1}])
+#      fflush(stdout);
 
 
       % read ship's underway data
