@@ -59,7 +59,7 @@ function [bb_3, bb_02, bb_err, ...
    %
 
 
-   time = bb3.counts.time - ( y0(YYYY) - 1 );
+   time = bb3.counts.time - y0(YYYY) ;
  
    % Determine times for filtered and unfiltered measurements to be used in
    % calculating calibration independent particle properties
@@ -100,8 +100,8 @@ function [bb_3, bb_02, bb_err, ...
 
    %%%%% extract temperature and salinity from underway data to compute beta_sw             
    %% NOTE: at this point of the processing, the underway time is one day ahead of the time of the optics               
-   Salinity = interp1(uway.time - ( y0(YYYY) - 1), uway.sal, time);   %%%%% <<<<<< CHECK (y0(YYYY)-1)
-   SST = interp1(uway.time - ( y0(YYYY) - 1 ), uway.sst, time);
+   Salinity = interp1(uway.time - y0(YYYY), uway.sal, time);   
+   SST = interp1(uway.time - y0(YYYY), uway.sst, time);
    % stop
  
    %initialize structure for results
