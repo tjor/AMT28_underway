@@ -28,7 +28,7 @@
    %first_day = 1;   
    for iday = first_day:last_day
         
-        disp(dailyfiles(iday).name)
+           disp(["\n" dailyfiles(iday).name "\n"] )
         fflush(stdout);
 
         % First process Ship ctd data
@@ -49,7 +49,7 @@
         % (also needed by ac9 processing)
         disp("\nprocessing Flow data...");  
         flow = step2f_flow_make_processed(WAPvars.flow, dailyfiles(iday));
-        disp("...done\n\n"); 
+        disp("...done"); 
 
         % Cycle through the variables within WAPvars
         instruments = fieldnames(WAPvars);
@@ -75,16 +75,9 @@
 #               case "bb3"
 #                   step2b_bb3_amt_make_processed(WAPvars.bb3, uway, dailyfiles(iday), iday, bb_opt_lim, CRUISE);
 
+               case "cstar"
+                   step2d_cstar_make_processed(WAPvars.cstar, dailyfiles(iday), cstar_lim);
 
-#
-#               case "cstar"
-#                   % This requires acs, so check if it is there
-#                   if ~isempty(intersect("acs",instruments))
-#                       step2d_cstar_make_processed(WAPvars.cstar, WAPvars.acs, dailyfiles(iday), cstar_lim);
-#                   else
-#                       disp("No acs on found! Cstar cannot be processed")
-#                   endif
-#
 #               case "ctd"
 #                   step2f_ctd_make_processed(WAPvars.ctd, dailyfiles(iday));
 
@@ -98,7 +91,7 @@
 #                   disp("Instrument to be implemented")
 #                   keyboard
            endswitch
-           disp("...done\n\n"); 
+           disp("...done"); 
        endfor
    endfor
   
