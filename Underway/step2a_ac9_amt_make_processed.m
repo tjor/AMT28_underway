@@ -13,10 +13,6 @@ function step2a_ac9_amt_make_processed(ac9, dailyfile, ac9_lim, FORCE, flow)
 
     tic
 
-   if ~exist(DIR_STEP2)
-      mkdir(DIR_STEP2);
-   endif
-
 
     ac9outap = [];
     ac9outcp = [];
@@ -103,7 +99,7 @@ function step2a_ac9_amt_make_processed(ac9, dailyfile, ac9_lim, FORCE, flow)
 
   
     
-   % compute approximate coefficient of variation within the binning time 
+   % compute approximate coefficient of variation within the bii_nning time 
    if ~isfield(ac9, 'a_cv')
       ac9.a_cv = [ac9.raw.std(:,1:n_wv)./ac9.raw.mean(:,1:n_wv)];
       ac9.c_cv = [ac9.raw.std(:,n_wv+1:end)./ac9.raw.mean(:,n_wv+1:end)];
@@ -121,9 +117,6 @@ function step2a_ac9_amt_make_processed(ac9, dailyfile, ac9_lim, FORCE, flow)
    ac9.cp = ac9.ctot - ac9.cfilt_i;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-    % select only non-NaN points
-    nn = ~isnan(ac9.cp(:,1));
 
     %-----  scattering correction  ------
     %--- method #3
@@ -164,7 +157,7 @@ function step2a_ac9_amt_make_processed(ac9, dailyfile, ac9_lim, FORCE, flow)
 
     
     savefile = [FN_ROOT_STEP2 strsplit(dailyfile.name, "_"){end}];
-    if (exist(savefile))
+    if exist(savefile, 'file')
        load(savefile)
     endif    
       
