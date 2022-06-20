@@ -12,7 +12,7 @@
    % Create date range
    [numdates, strdates, vecdates, jday_in] = get_date_range(inidate,enddate);
 
-   fn_saved = glob([DIR_STEP1 "*mat"]);
+   fn_saved = glob([DIR_STEP1 "*mat"])
 
    global YYYY = vecdates(1, 1); % Assumes all AMT days are within same year!! % used as processing Id
 

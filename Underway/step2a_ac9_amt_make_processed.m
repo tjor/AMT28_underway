@@ -27,7 +27,7 @@ function step2a_ac9_amt_make_processed(ac9, dailyfile, ac9_lim, FORCE, flow)
 
     % this is to skip AC9 processng or when there are no AC9 data
     if (FORCE != 1 & (~exist('ac9')) |  all(isnan(ac9.raw.med(:,1))))
-        continue
+        return % older versions of ocytave
     endif
       
 

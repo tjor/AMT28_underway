@@ -20,9 +20,10 @@ WAP_ROOT = strcat(lower(CRUISE),"b"); % tjor: `root" part of WAP file for <With_
 % (this will have to be changed each time the scripts are run)
 % first day of cruise = 20180925, jday=268: "With_AC9/"  
 % day of switch to default config = 20180927, jday=270: "/" 
-% day of ACS switch = 20181019, jday=292": "With_AC9_Without_ACS/"%
-inidate = "20180926";
-enddate = "20181027";
+% day of ACS switch = 20181019, jday=292": "With_AC9_Without_ACS/"% end day 301
+% dates
+inidate = "20181025";
+enddate = "20181028";
 %inidate = "20181015";
 %enddate = "20181025";
 
@@ -67,9 +68,9 @@ endif
 %-----------------------------
 % Paths
 #MAIN_PATH = "/users/rsg/tjor/scratch_network/AMT_underway/AMT28/";
-#MAIN_PATH = "/data/abitibi1/scratch/scratch_disk/tjor/AMT_underway/AMT28/"; disp("\n\n-----------THIS IS FOR TOM----------\n\n"); fflush(stdout);
-#MAIN_PATH = "/tom/AMT_underway/AMT28/"; disp("\n\n---------THIS IS FOR GIORGIO---------\n\n"); fflush(stdout);
-MAIN_PATH = "/fast_scratch/AMT28/"; disp("\n\n---------THIS IS FOR GIORGIO---------\n\n"); fflush(stdout);
+MAIN_PATH = "/data/abitibi1/scratch/scratch_disk/tjor/AMT_underway/AMT28/"; disp("\n\n-----------THIS IS FOR TOM----------\n\n"); fflush(stdout);
+%MAIN_PATH = "/tom/AMT_underway/AMT28/"; %disp("\n\n---------THIS IS FOR GIORGIO---------\n\n"); fflush(stdout);
+%MAIN_PATH = "/fast_scratch/AMT28/"; disp("\n\n---------THIS IS FOR GIORGIO---------\n\n"); fflush(stdout);
 % MAIN_PATH = [MAIN_PATH, "/Data/", CRUISE,"/"];     % Root directory for current AMT cruise
 PATH_DATA = [MAIN_PATH, "Data/"];        % Directory with all raw and wapped data
 PATH_SOURCE = [MAIN_PATH, "Source/"];% Directory with all source code
