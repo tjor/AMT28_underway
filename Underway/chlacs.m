@@ -8,12 +8,12 @@ function chla = chlacs(acs)
 
 
 
-    wv650 = find(acs.wv==650);
-    wv676 = find(acs.wv==676);
-    wv714 = find(acs.wv==714);
+    wv650 = find(acs.wv==650); %  absorption at left of peak
+    wv676 = find(acs.wv==676); % peak absoprtion wavelength
+    wv714 = find(acs.wv==714); % absorption at right of peak
 
-
-    chla = (acs.ap(:,wv676) -39/65.*acs.ap(:,wv650)-26/65*acs.ap(:,wv714))./0.014;
+    % peak height relative to edges of peak re-scaled to Chl (65 used in-place of 64 wv units - legacy mistake - no concern) 
+    chla = (acs.ap(:,wv676) -39/65.*acs.ap(:,wv650)-26/65*acs.ap(:,wv714))./0.014; % conversion factor 0.014 m^2 mg^-1 of Chl
     
 endfunction    
 

@@ -22,7 +22,7 @@ WAP_ROOT = strcat(lower(CRUISE),"b"); % tjor: `root" part of WAP file for <With_
 % day of switch to default config = 20180927, jday=270: "/" 
 % day of ACS switch = 20181019, jday=292": "With_AC9_Without_ACS/"% end day 301
 % dates
-inidate = "20181025";
+inidate = "20180925";
 enddate = "20181028";
 %inidate = "20181015";
 %enddate = "20181025";
@@ -128,6 +128,7 @@ FNC_METDATA = @rd_oceanloggerJCR; # this function should be inside Source/Underw
 # Path-related variables for step2
 global DIR_STEP1 = [OUT_PROC UWAY_DIR "Step1/"];
 global DIR_STEP2 = [OUT_PROC UWAY_DIR "Step2/"];
+global DIR_STEP3 = [OUT_PROC UWAY_DIR "Step3/"];
 global FN_ROOT_STEP2 = [DIR_STEP2 "proc_optics_" lower(CRUISE) "_"];
 
 

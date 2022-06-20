@@ -49,6 +49,17 @@ amt_optics.acs.cp_u  = [];
 amt_optics.acs.N     = [];
 amt_optics.acs.time  = [];
 
+% ac9
+amt_optics.ac9.chl   = [];
+amt_optics.ac9.ap    = [];
+amt_optics.ac9.ap_u  = [];
+amt_optics.ac9.bp    = [];
+amt_optics.ac9.bp_u  = [];
+amt_optics.ac9.cp    = [];
+amt_optics.ac9.cp_u  = [];
+amt_optics.ac9.N     = [];
+amt_optics.ac9.time  = [];
+
 % bb3
 amt_optics.bb3.bbp       = [];
 amt_optics.bb3.bbp_err   = [];
@@ -103,11 +114,12 @@ amt_optics.ctd.sal = [];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-din = [OUT_PROC UWAY_DIR 'Step2/'];
+din = DIR_STEP2;
 fn = dir([din "*mat"]);
 
 % Expected variables to be present:
 % - acs
+% - ac9
 % - bb3
 % - cstar
 % - flow
@@ -142,12 +154,27 @@ for ifn = 1:size(fn,1)
         amt_optics.acs.N      = [amt_optics.acs.N;   out.acs.N];
         amt_optics.acs.wv   = [out.acs.wv];
     else
-        disp('acs do not exist in file: What to do?')
-        keyboard
+        disp('acs do not exist in file')
     endif
 
+   % Check if ac9 variable exists
+    if ~isempty(intersect('ac9',fieldnames(out)))
+        % load ac9 data into amt_optics
+        amt_optics.ac9.time = [amt_optics.ac9.time; out.ac9.time];
+        amt_optics.ac9.chl  = [amt_optics.ac9.chl;  chlac9(out.ac9)];
+        amt_optics.ac9.ap   = [amt_optics.ac9.ap;   out.ac9.ap];
+        amt_optics.ac9.bp   = [amt_optics.ac9.bp;   out.ac9.bp];
+        amt_optics.ac9.cp   = [amt_optics.ac9.cp;   out.ac9.cp];
+        amt_optics.ac9.ap_u   = [amt_optics.ac9.ap_u;   out.ac9.ap_u];
+        amt_optics.ac9.bp_u   = [amt_optics.ac9.bp_u;   out.ac9.bp_u];
+        amt_optics.ac9.cp_u   = [amt_optics.ac9.cp_u;   out.ac9.cp_u];
+        amt_optics.ac9.N      = [amt_optics.ac9.N;   out.ac9.N];
+        amt_optics.ac9.wv   = [out.ac9.wv];
+    else
+        disp('ac9 do not exist in file')
+    endif
 
-    % Check if acs variable exists
+    % Check if bb3 variable exists
     if ~isempty(intersect('bb3',fieldnames(out)))
         % load bb3 data into amt_optics
         amt_optics.bb3.bbp         = [amt_optics.bb3.bbp;       out.bb3.bbp];
@@ -162,8 +189,8 @@ for ifn = 1:size(fn,1)
         amt_optics.bb3.bdgt.DC     = [amt_optics.bb3.bdgt.DC ;  out.bb3.bdgt.DC ];
         amt_optics.bb3.bdgt.WE     = [amt_optics.bb3.bdgt.WE ;  out.bb3.bdgt.WE ];
     else
-        disp('bb3 do not exists in file: What to do?')
-        keyboard
+        disp('bb3 do not exists in file')
+
     endif
       
     
@@ -217,21 +244,17 @@ endfor
 
 %stop  % <-----------------    uncomment this stop before using remove_bbp_noise.m
 
-
-%amt_optics.acs.time = amt_optics.acs.time + 1;%  the "+1" is needed because WAP saves times inside its files (but not on its filename) one day behind. 
-amt_optics.acs.time = amt_optics.acs.time + 0;%  this is based on a comparison with the ship's underway cstar measurements
-
 % Get current year from inidate
 t0 = y0(str2num(inidate(1:4)));
 
 amt_optics.time = amt_optics.acs.time + t0     ;%     For example, on ship's day 288, WAS saves a file with 288 in the file name, but the times inside the file start on day 287 and end on day 288   
                                       
 
-% Interpolate ship's underway on acs time
+% Interpolate ship's underway on acs time  % tjor: p
 % Starting from 2 removes time from the uway field
-for ifield = 2:length(fields)
-    amt_optics.uway.(fields{ifield}) = interp1(total_uway.time, total_uway.(fields{ifield}), amt_optics.time);
-endfor
+%for ifield = 2:length(fields)
+ %   amt_optics.uway.(fields{ifield}) = interp1(total_uway.time, total_uway.(fields{ifield}), amt_optics.time);
+%endfor
 
 
 % wv532 = find(amt_optics.acs.wv>=532,1);
@@ -254,7 +277,7 @@ amt_optics.bb3.bbp_corr = amt_optics.bb3.bbp - amt_optics.bb3.bb02;
 % keyboard
 eval([lower(CRUISE) '= amt_optics;'])
 
-pathout = [din '../Step3/'];
+pathout = DIR_STEP3;
 if ~exist(pathout,'dir')
     mkdir(pathout)
 endif
