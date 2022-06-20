@@ -181,7 +181,7 @@ function plot_spectra (jday_str, spectra_alim, spectra_clim, chl_lim)
 
         hcl = colorbar;
 
-        #z = get(hcl, 'zticklabel');
+        #z = get(hcl, 'zticklabel'); % tjor: requires fix to jdayu
 
 #        # this is to account for different behaviour between different octave versions
 #        oct_ver = version;
