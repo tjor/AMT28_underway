@@ -62,7 +62,7 @@ function plot_spectra (jday_str, spectra_alim, spectra_clim, chl_lim)
         
         axis([400 750 0 spectra_alim])
         
-        set(gca, 'pos', [0.11        0.13     0.36       0.8], 'fontsize', 18)
+        set(gca, 'position', [0.11        0.13     0.36       0.8], 'fontsize', 18)
         
         ylabel("a_p [m^{-1}]\n", 'fontsize', 26, 'fontweight', 'bold')
         xlabel('wavelength [nm]', 'fontsize', 20, 'fontweight', 'bold')
@@ -92,8 +92,8 @@ function plot_spectra (jday_str, spectra_alim, spectra_clim, chl_lim)
         axis([400 750 0 spectra_clim])
 
         set(gcf, 'paperposition', [0.25         2.5           16           6])
-        set(gca, 'pos', [0.57034        0.13     0.4       0.8], 'fontsize', 18)
-        set(hcl, 'pos', [0.9        0.6      0.02       0.3], 'fontsize', 18 )
+        set(gca, 'position', [0.57034        0.13     0.4       0.8], 'fontsize', 18)
+        set(hcl, 'position', [0.9        0.6      0.02       0.3], 'fontsize', 18 )
 
         ylabel("a_p:a_p(440)\n", 'fontsize', 26, 'fontweight', 'bold')
         xlabel('wavelength [nm]', 'fontsize', 20, 'fontweight', 'bold')
@@ -122,7 +122,7 @@ function plot_spectra (jday_str, spectra_alim, spectra_clim, chl_lim)
         ylim(chl_lim)    
 
         set(gcf, 'paperposition', [0.25         2.5           8           4])
-        set(gca, 'pos', [0.2        0.2     0.75       0.7], 'fontsize', 18)
+        set(gca, 'position', [0.2        0.2     0.75       0.7], 'fontsize', 18)
         set(gca, 'yscale', 'log')
         
         ylabel("chl_{ACs} [mg m^{-3}]\n", 'fontsize', 24, 'fontweight', 'bold')
@@ -161,7 +161,7 @@ function plot_spectra (jday_str, spectra_alim, spectra_clim, chl_lim)
         
         axis([400 750 0 spectra_alim])
         
-        set(gca, 'pos', [0.11        0.13     0.36       0.8], 'fontsize', 18)
+        set(gca, 'position', [0.11        0.13     0.36       0.8], 'fontsize', 18)
         
         ylabel("a_p [m^{-1}]\n", 'fontsize', 26, 'fontweight', 'bold')
         xlabel('wavelength [nm]', 'fontsize', 20, 'fontweight', 'bold')
@@ -181,10 +181,20 @@ function plot_spectra (jday_str, spectra_alim, spectra_clim, chl_lim)
 
         hcl = colorbar;
 
-        z = get(hcl, 'zticklabel');
-        for iz = 1:length(z)
-            z{iz} = sprintf('%02u', floor(str2num(z{iz})*23.9));
+        #z = get(hcl, 'zticklabel');
+
+#        # this is to account for different behaviour between different octave versions
+#        oct_ver = version;
+#        oct_ver = str2num(oct_ver(1));
+
+        tmpz = [0:6:24]; 
+
+
+        for iz = 1:length(tmpz)-1
+                #z{iz} = sprintf('%02u', floor(str2num(z{iz})*23.9));
+                z{iz} = sprintf("%02u", tmpz(iz));
         endfor
+        
         set(hcl, 'zticklabelmode', 'manual')
         set(hcl, 'ztick', str2num(cell2mat(z')));
         set(hcl, 'zticklabel', z, 'fontsize', 14);
@@ -192,8 +202,8 @@ function plot_spectra (jday_str, spectra_alim, spectra_clim, chl_lim)
         axis([400 750 0 spectra_clim])
 
         set(gcf, 'paperposition', [0.25         2.5           16           6])
-        set(gca, 'pos', [0.57034        0.13     0.4       0.8], 'fontsize', 18)
-        set(hcl, 'pos', [0.9        0.6      0.02       0.3], 'fontsize', 18 )
+        set(gca, 'position', [0.57034        0.13     0.4       0.8], 'fontsize', 18)
+        set(hcl, 'position', [0.9        0.6      0.02       0.3], 'fontsize', 18 )
 
         ylabel("a_p:a_p(440)\n", 'fontsize', 26, 'fontweight', 'bold')
         xlabel('wavelength [nm]', 'fontsize', 20, 'fontweight', 'bold')
@@ -230,7 +240,7 @@ function plot_spectra (jday_str, spectra_alim, spectra_clim, chl_lim)
         ylim(chl_lim)    
 
         set(gcf, 'paperposition', [0.25         2.5           8           4])
-        set(gca, 'pos', [0.2        0.2     0.75       0.7], 'fontsize', 18)
+        set(gca, 'position', [0.2        0.2     0.75       0.7], 'fontsize', 18)
         set(gca, 'yscale', 'log')
         
         ylabel("chl_{AC9} [mg m^{-3}]\n", 'fontsize', 24, 'fontweight', 'bold')
@@ -254,13 +264,13 @@ function plot_spectra (jday_str, spectra_alim, spectra_clim, chl_lim)
     
     
     
-   if isfield(out, 'acs') & isfield(out, 'ac9') & ...
-           ~all(isnan(out.acs.ap(:,10))) & ~all(isnan(out.ac9.ap(:, 1))) 
+   if isfield(out, 'acs') & isfield(out, 'ac9') 
+     if  ~all(isnan(out.acs.ap(:,10))) & ~all(isnan(out.ac9.ap(:, 1))) 
 
         chlratio = chlacs./chlac9;
 
         if all(isnan(chlratio))
-            continue
+           return 
         endif
 
         close all
@@ -277,7 +287,7 @@ function plot_spectra (jday_str, spectra_alim, spectra_clim, chl_lim)
         
         
         set(gcf, 'paperposition', [0.25         2.5           8           4])
-        set(gca, 'pos', [0.2        0.2     0.75       0.65], 'fontsize', 18)
+        set(gca, 'position', [0.2        0.2     0.75       0.65], 'fontsize', 18)
 
         ylabel('chl_{ACs}/chl_{AC9}', 'fontsize', 24, 'fontweight', 'bold')
         xlabel('decimal day of the year', 'fontsize', 20, 'fontweight', 'bold')
@@ -293,7 +303,7 @@ function plot_spectra (jday_str, spectra_alim, spectra_clim, chl_lim)
         save("-ascii", [dout 'chl_chlAC9_' jday_str '.dat'], "out");
     
     endif
-    
+  endif  
     
     
 endfunction
