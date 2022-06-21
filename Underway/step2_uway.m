@@ -26,7 +26,44 @@
    endfor
 
    dailyfiles = dir(  [DIR_STEP1 "*mat"]  ); % redundancy with line 27? just different format
-   
+
+
+
+
+   # initialize empty (nan) acs structure in files to make sure we have a complete time-stamp dimension for the whole cruise
+   for iday = 1:length(jdays)
+
+     # define acs time vector (from file name)
+     onemin = datenum([0 0 0 0 1 0 ]); # this is the time interval between bins (i.e., 1 minute)     
+     yymmddHHMMDD = zeros(1440,6); # initialize empty matrix
+     yymmddHHMMDD(:,3) = onemin*[0:1:1440-1]'; # assign to day-column the minute intervals
+
+     tmp_time = datenum( ones(1440,1)*[0 0 0 0 0 0] + yymmddHHMMDD) + jdays(iday)    ; # compute julia day for current date (jdays(iday))
+
+     acs.time = tmp_time; # assign time vector to acs structure of this day
+
+     # fill the rest of the acs structure with NaNs
+     acs.ap = nan(1440,176);
+     acs.cp = nan(1440,176);
+     acs.ap_u = nan(1440,176);
+     acs.cp_u = nan(1440,176);
+     acs.N = nan(1440,1);
+     acs.bp = nan(1440,176);
+     acs.bp_u = nan(1440,176);
+     acs.nn = nan(1440,1);
+     acs.wl = nan(1,176);
+     acs.wv = nan(1,176);
+
+     out.acs = acs;
+
+     # write empty step2 file 
+     savefile = [FN_ROOT_STEP2 strsplit(dailyfiles(iday).name, "_"){end}]
+     save('-v6', savefile , 'out' )
+
+
+   endfor
+
+
    %first_day = 1;   
    for iday = first_day:last_day
         
@@ -52,6 +89,7 @@
         disp("processing Flow data...");  
         flow = step2f_flow_make_processed(WAPvars.flow, dailyfiles(iday));
         disp("...done"); 
+
 
         % Cycle through the variables within WAPvars
         instruments = fieldnames(WAPvars);
@@ -88,6 +126,9 @@
 #                   keyboard
 
            endswitch
+
+
+
            disp("...done");
        endfor
        disp("\n");

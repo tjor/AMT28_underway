@@ -181,11 +181,7 @@ function plot_spectra (jday_str, spectra_alim, spectra_clim, chl_lim)
 
         hcl = colorbar;
 
-<<<<<<< HEAD
         #z = get(hcl, 'zticklabel'); % tjor: requires fix to jdayu
-=======
-        #z = get(hcl, 'zticklabel');
->>>>>>> eb2c5c70266db540134262072bf1cfdf8f77b054
 
 #        # this is to account for different behaviour between different octave versions
 #        oct_ver = version;
@@ -223,7 +219,7 @@ function plot_spectra (jday_str, spectra_alim, spectra_clim, chl_lim)
     
         #### now plot chl estimate
 
-        chlac9 = chlac9(out.ac9.ap);
+        chlac9 = chlac9(out.ac9);
 
         close all
         figure(1, 'visible', 'off')

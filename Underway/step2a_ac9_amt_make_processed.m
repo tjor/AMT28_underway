@@ -63,10 +63,24 @@ function step2a_ac9_amt_make_processed(ac9, dailyfile, ac9_lim, FORCE, flow)
     med_fi_c = median(tmp_fi_c,2);
     med_fi_c = reshape(med_fi_c, n_wv,size(ac9.raw.med(i_fl,n_wv+1:end),1)/xTF)';
 
+    % take median also of the within-bin variability of a and c
+    tmp_fi_a_u = ac9.raw.prc(i_fl, 1:n_wv)';
+    tmp_fi_a_u = reshape(tmp_fi_a_u, n_wv, xTF, size(ac9.raw.prc(i_fl,1:n_wv),1)/xTF);
+    med_fi_a_u = median(tmp_fi_a_u, 2);
+    med_fi_a_u = reshape(med_fi_a_u, n_wv, size(ac9.raw.prc(i_fl,1:n_wv),1)/xTF)'; # hourly absorption robust-std medians of the fist 10 minutes of every hour
+
+    tmp_fi_c_u = ac9.raw.prc(i_fl, n_wv+1:end)';
+    tmp_fi_c_u = reshape(tmp_fi_c_u, n_wv, xTF, size(ac9.raw.prc(i_fl,n_wv+1:end),1)/xTF);
+    med_fi_c_u = median(tmp_fi_c_u, 2);
+    med_fi_c_u = reshape(med_fi_c_u, n_wv,size(ac9.raw.prc(i_fl,n_wv+1:end),1)/xTF)';
+
     
     % Linear interpolation between filtered measurements
     ac9.afilt_i = interp1(time(i_fl_med), med_fi_a, time, 'extrap');
     ac9.cfilt_i = interp1(time(i_fl_med), med_fi_c, time, 'extrap');
+   
+    ac9.afilt_u_i = interp1(time(i_fl_med), med_fi_a_u, time, 'extrap');
+    ac9.cfilt_u_i = interp1(time(i_fl_med), med_fi_c_u, time, 'extrap');
 
     
     %store filtered data
@@ -91,11 +105,16 @@ function step2a_ac9_amt_make_processed(ac9, dailyfile, ac9_lim, FORCE, flow)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
 
-    %% Remove filtered data from measurements
+    %% Remove filtered data from measurements and estimated their uncertainties
     ac9.atot = nan(size(ac9.raw.med(:,1:n_wv)));
     ac9.ctot = nan(size(ac9.raw.med(:,n_wv+1:end)));
     ac9.atot(i_uf,:) = ac9.raw.med(i_uf,1:n_wv);
     ac9.ctot(i_uf,:) = ac9.raw.med(i_uf,n_wv+1:end);
+   
+    ac9.atot_u = nan(size(ac9.raw.prc(:,1:n_wv)));
+    ac9.ctot_u = nan(size(ac9.raw.prc(:,n_wv+1:end)));
+    ac9.atot_u(i_uf,:) = ac9.raw.prc(i_uf,1:n_wv) ./ sqrt(ac9.raw.N(i_uf,1:n_wv)) ; % note that I am dividing the uncertainty by sqrt(N)
+    ac9.ctot_u(i_uf,:) = ac9.raw.prc(i_uf,n_wv+1:end) ./ sqrt(ac9.raw.N(i_uf,n_wv+1:end)); % note that I am dividing the uncertainty by sqrt(N)
 
   
     
@@ -115,12 +134,27 @@ function step2a_ac9_amt_make_processed(ac9, dailyfile, ac9_lim, FORCE, flow)
    % Calibration-independent particle optical properties
    ac9.ap = ac9.atot - ac9.afilt_i;
    ac9.cp = ac9.ctot - ac9.cfilt_i;
+
+   % propagate uncertainties
+   ac9.ap_u = sqrt(ac9.atot_u.^2 + ac9.afilt_u_i.^2);
+   ac9.cp_u = sqrt(ac9.ctot_u.^2 + ac9.cfilt_u_i.^2);
+   
+   % store number of points binned in each bin
+   ac9.N = ac9.raw.N(:,1);
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     %-----  scattering correction  ------
     %--- method #3
-    [ac9.corr.ap, ac9.corr.bp] = scatt_corr_3(ac9.cp, ac9.ap); # this is the measurement equation for ap (error propagation still to do)
+    [ac9.corr.ap, ac9.corr.bp, ac9err] = scatt_corr_3(ac9); # this is the measurement equation for ap (error propagation still to do)
+
+    ac9.corr.ap_u = ac9err.ap_u;
+    ac9.corr.bp_u = ac9err.bp_u;
+    ac9.corr.cp_u = ac9err.cp_u;
+
 
     ac9.corr.cp = ac9.cp;  %just to have all the data in the same sub-structure (this is the measurement equation for cp)
     
