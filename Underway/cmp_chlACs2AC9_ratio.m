@@ -23,6 +23,8 @@ chlACs2AC9 = [median(chlACs./chlAC9) prcrng(chlACs./chlAC9)];
 save("-ascii", [OUT_PROC UWAY_DIR "chlACs2AC9_median_prcrng.dat"], "chlACs2AC9");
 
 
+# add new chl_adj variable to ac9 structure
+amt_optics.ac9.chl_adj = amt_optics.ac9.chl * chlACs2AC9(1);
 
 
 
