@@ -80,6 +80,7 @@
      # add acs structure to out structure to be written in step2 file
      out.acs = acs;
      out.ac9 = ac9;
+     out.bb3 = bb3;
 
      # write empty step2 file 
      savefile = [FN_ROOT_STEP2 strsplit(dailyfiles(iday).name, "_"){end}];

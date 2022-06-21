@@ -183,8 +183,8 @@ for ifn = 1:size(fn,1)
         % load bb3 data into amt_optics
         amt_optics.bb3.bbp         = [amt_optics.bb3.bbp;       out.bb3.bbp];
         amt_optics.bb3.bbp_err     = [amt_optics.bb3.bbp_err;   out.bb3.bbp_err];
-        amt_optics.bb3.bb02        = [amt_optics.bb3.bb02;      out.bb3.bbp02um];
-        amt_optics.bb3.bb02_err    = [amt_optics.bb3.bb02_err;  out.bb3.bbp02um_err];
+        amt_optics.bb3.bb02        = [amt_optics.bb3.bb02;      out.bb3.bb02];
+        amt_optics.bb3.bb02_err    = [amt_optics.bb3.bb02_err;  out.bb3.bb02_err];
 
         amt_optics.bb3.bdgt.X      = [amt_optics.bb3.bdgt.X  ;  out.bb3.bdgt.X  ];
         amt_optics.bb3.bdgt.SF     = [amt_optics.bb3.bdgt.SF ;  out.bb3.bdgt.SF ];
