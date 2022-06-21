@@ -64,6 +64,18 @@
      ac9.N = nan(1440,1);
      ac9.wv = nan(1,9);
 
+     bb3.bbp = nan(1440,3);
+     bb3.bbp_err = nan(1440,3);
+     bb3.bb02 = nan(1440,3);
+     bb3.bb02_err = nan(1440,3);
+     bb3.bbp_corr = nan(1440,3);
+     bb3.bdgt.X = nan(1440,3);
+     bb3.bdgt.SF = nan(1440,3);
+     bb3.bdgt.C = nan(1440,3);
+     bb3.bdgt.Bw = nan(1440,3);
+     bb3.bdgt.DC = nan(1440,3);
+     bb3.bdgt.WE = nan(1440,3);
+
 
      # add acs structure to out structure to be written in step2 file
      out.acs = acs;
@@ -150,7 +162,6 @@
   
  if PLOT == 1
    % Plot spectra from acs
-
    disp("\nplotting spectra...");
    for iday = first_day:last_day
 #      disp(num2str(jdays(iday)));
