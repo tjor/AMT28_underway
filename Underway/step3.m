@@ -118,14 +118,18 @@ din = DIR_STEP2;
 fn = dir([din "*mat"]);
 
 % Expected variables to be present:
+# - uway
 % - acs
 % - ac9
 % - bb3
 % - cstar
 % - flow
-% Check each time if they are present or not among the file variables
+% Check each time if they are present or not among the file variablesi
+
+
+
 for ifn = 1:size(fn,1)
-    disp(fn(ifn).name)
+    disp(["\n" fn(ifn).name])
     load([din fn(ifn).name]);
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -141,7 +145,7 @@ for ifn = 1:size(fn,1)
         
 
     % Check if acs variable exists
-    if ~isempty(intersect('acs',fieldnames(out)))
+    if ~isempty(intersect('acs', fieldnames(out)))
         % load acs data into amt_optics
         amt_optics.acs.time = [amt_optics.acs.time; out.acs.time];
         amt_optics.acs.chl  = [amt_optics.acs.chl;  chlacs(out.acs)];
@@ -158,7 +162,7 @@ for ifn = 1:size(fn,1)
     endif
 
    % Check if ac9 variable exists
-    if ~isempty(intersect('ac9',fieldnames(out)))
+    if ~isempty(intersect('ac9', fieldnames(out)))
         % load ac9 data into amt_optics
         amt_optics.ac9.time = [amt_optics.ac9.time; out.ac9.time];
         amt_optics.ac9.chl  = [amt_optics.ac9.chl;  chlac9(out.ac9)];
@@ -252,9 +256,10 @@ amt_optics.time = amt_optics.acs.time + t0     ;%     For example, on ship's day
 
 % Interpolate ship's underway on acs time  % tjor: p
 % Starting from 2 removes time from the uway field
-%for ifield = 2:length(fields)
+for ifield = 2:length(fields)
  %   amt_optics.uway.(fields{ifield}) = interp1(total_uway.time, total_uway.(fields{ifield}), amt_optics.time);
-%endfor
+   amt_optics.uway.(fields{ifield}) = total_uway.(fields{ifield});
+endfor
 
 
 % wv532 = find(amt_optics.acs.wv>=532,1);
@@ -274,14 +279,20 @@ amt_optics.time = amt_optics.acs.time + t0     ;%     For example, on ship's day
 amt_optics.bb3.bbp_corr = amt_optics.bb3.bbp - amt_optics.bb3.bb02;
 
 
-% keyboard
-eval([lower(CRUISE) '= amt_optics;'])
+# scale ac9 chl to acs chl
+run("cmp_chlACs2AC9_ratio");
 
-pathout = DIR_STEP3;
-if ~exist(pathout,'dir')
-    mkdir(pathout)
+
+% keyboard
+eval([lower(CRUISE) '= amt_optics;']) # create amtXX structure
+
+
+
+
+if ~exist(DIR_STEP3,'dir')
+    mkdir(DIR_STEP3)
 endif
-save('-v6',[pathout lower(CRUISE) '_optics.mat'],lower(CRUISE))
+save('-v6', [DIR_STEP3 lower(CRUISE) '_optics.mat'], lower(CRUISE))
 
 % amt_chl.time = amt_optics.time;
 % amt_chl.chl = amt_optics.acs.chl;

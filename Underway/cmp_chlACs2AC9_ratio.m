@@ -1,35 +1,25 @@
 # compute stats for ACs 2 AC9 chl correction
-clear all
-
-% Load paths and common variables
-run('../input_parameters.m')
-global din = [OUT_PROC UWAY_DIR];
-global proc_dir = [din 'Processed/'];
-global gps_dir = PATH_GPS;
-global ts_dir = PATH_TS;
-% Create path for saving figures
-global fig_dir = [OUT_FIGS,UWAY_DIR];
 
 
-jday_strs = [{'268'},{'269'},{'270'}]; # these are the days for which we have concurrent measurements of ACs and AC9
+# find matching times for AC9 and ACS
+[~, iACS, iAC9] = intersect(amt_optics.acs.time, amt_optics.ac9.time);
+
+# find when ACS is not nan
+inotnan = find(~isnan(amt_optics.acs.chl(iACS)) & ~isnan(amt_optics.ac9.chl(iAC9)));
+
+chlACs = amt_optics.acs.chl(iACS(inotnan));
+chlAC9 = amt_optics.ac9.chl(iAC9(inotnan));
 
 
-chlACs = [];
-chlAC9 = [];
+# check if ratio depends on chl 
+disp(sprintf("\ncorrelation coefficient between chlACs and ratio chlACs:chlAC9 = %0.3f\n", corr(chlACs, chlACs./chlAC9))) 
 
-for ifn = 1:length(jday_strs)
 
-    dout = [fig_dir jday_strs{ifn} '/'];
-
-    tmp = load([dout 'chlACS_chlAC9_' jday_strs{ifn} '.dat']);
-    
-    chlACs = [chlACs; tmp(:,1)];
-    chlAC9 = [chlAC9; tmp(:,2)];
-    
-endfor
-
+# compute median value of ACS:AC9
 chlACs2AC9 = [median(chlACs./chlAC9) prcrng(chlACs./chlAC9)];
 
+
+# save ratio to to file
 save("-ascii", [OUT_PROC UWAY_DIR "chlACs2AC9_median_prcrng.dat"], "chlACs2AC9");
 
 
