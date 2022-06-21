@@ -50,6 +50,7 @@ function plot_spectra (jday_str, spectra_alim, spectra_clim, chl_lim)
    
 
    if isfield(out, 'acs')
+     if ~all(isnan(out.acs.ap))
 
         figure(1, 'visible', 'off')
         subplot(121)
@@ -140,7 +141,8 @@ function plot_spectra (jday_str, spectra_alim, spectra_clim, chl_lim)
         outchl = [out.acs.time+1 chlacs];
         fnout = [dout 'chl_' jday_str '_ACs.dat'];
         save("-ascii", fnout, "outchl");
-        
+
+      endif  
     endif
 
     
