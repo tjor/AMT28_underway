@@ -148,6 +148,7 @@ function plot_spectra (jday_str, spectra_alim, spectra_clim, chl_lim)
     
     
     if isfield(out, 'ac9')
+            if ~all(isnan(out.ac9.ap))
 
         #medap = medfilt1(out.ac9.ap, 31);
 
@@ -261,7 +262,7 @@ function plot_spectra (jday_str, spectra_alim, spectra_clim, chl_lim)
            fnout = [dout 'chl_' jday_str '_AC9.dat'];
            save("-ascii", fnout, "outchl");     
         endif        
-        
+     endif  
     endif
     
     

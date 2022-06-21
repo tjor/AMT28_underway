@@ -30,7 +30,7 @@
 
 
 
-   # initialize empty (nan) acs structure in files to make sure we have a complete time-stamp dimension for the whole cruise
+   # initialize empty (nan) acs and ac9 structure in files to make sure we have a complete time-stamp dimension for the whole cruise
    for iday = 1:length(jdays)
 
      # define acs time vector (from file name)
@@ -54,8 +54,20 @@
      acs.wl = nan(1,176);
      acs.wv = nan(1,176);
 
+     ac9.time = acs.time;
+     ac9.ap = nan(1440,9);
+     ac9.ap_u = nan(1440,9);
+     ac9.bp = nan(1440,9);
+     ac9.bp_u = nan(1440,9);
+     ac9.cp = nan(1440,9);
+     ac9.cp_u = nan(1440,9);
+     ac9.N = nan(1440,1);
+     ac9.wv = nan(1,9);
+
+
      # add acs structure to out structure to be written in step2 file
      out.acs = acs;
+     out.ac9 = ac9;
 
      # write empty step2 file 
      savefile = [FN_ROOT_STEP2 strsplit(dailyfiles(iday).name, "_"){end}];
