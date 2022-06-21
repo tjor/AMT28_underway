@@ -54,10 +54,11 @@
      acs.wl = nan(1,176);
      acs.wv = nan(1,176);
 
+     # add acs structure to out structure to be written in step2 file
      out.acs = acs;
 
      # write empty step2 file 
-     savefile = [FN_ROOT_STEP2 strsplit(dailyfiles(iday).name, "_"){end}]
+     savefile = [FN_ROOT_STEP2 strsplit(dailyfiles(iday).name, "_"){end}];
      save('-v6', savefile , 'out' )
 
 
