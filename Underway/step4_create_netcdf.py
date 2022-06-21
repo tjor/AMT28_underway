@@ -10,7 +10,7 @@ import datetime as dt
 import ipdb
 
 
-def main(amt_n,amt_y):
+def main(amt_n, amt_y):
     pathin = '../../Processed/Underway/Step3/'
     # pathin = '../../../AMT%s/Processed/Underway/Step3/' % amt_n
     # pathin = '/data/datasets/cruise_data/active/AMT%s/OSU/Optics/AMT%s_source/m/' % (amt_n,amt_n)
@@ -63,12 +63,17 @@ def main(amt_n,amt_y):
     ds.time.encoding['calendar'] = "proleptic_gregorian"
     
     ds.assign_coords(wv =  amt['acs'].item()['wv'].item().squeeze() )
-    ds['wv'] = amt['acs'].item()['wv'].item().squeeze()
-    ds['wv'].attrs = {'units' : 'nanometers'}
+    ds['acs_wv'] = amt['acs'].item()['wv'].item().squeeze()
+    ds['acs_wv'].attrs = {'units' : 'nanometers'}
     
-    ds.assign_coords(bb3wv =  np.array([470., 532., 700.]) )
-    ds['bb3wv'] = np.array([470., 532., 700.]) 
-    ds['bb3wv'].attrs = {'units' : 'nanometers'}
+    if 'ac9' in amtkeys:
+        ds.assign_coords(wv =  amt['ac9'].item()['wv'].item().squeeze() )
+        ds['ac9_wv'] = amt['ac9'].item()['wv'].item().squeeze()
+        ds['ac9_wv'].attrs = {'units' : 'nanometers'}
+    
+    ds.assign_coords(bb9wv =  np.array([470., 532., 700.]) )
+    ds['bb3_wv'] = np.array([470., 532., 700.]) 
+    ds['bb3_wv'].attrs = {'units' : 'nanometers'}
 
     #xrcoords['time'] = dtime
     #xrcoords_attrs['time_units'] = "UTC"
@@ -108,11 +113,20 @@ def main(amt_n,amt_y):
             # drop wv from list
             _varkeys.remove('wv')
 
+        # If ivar is ac9 need to pull out the wavelengths vector
+        if ivar == 'ac9':
+            ac9wv = _var['wv'].item().squeeze()
+            ## Add them to xarray coordinates
+            #xrcoords['wv'] = acswv
+            #xrcoords_attrs['wv_units'] = 'nanometers'
+            # drop wv from list
+            _varkeys.remove('wv')
+
         if ivar == 'bb3':
             # need to read bb3 wavelengths from configuration file
-            bb3wv = np.array([1.,2.,3.])
+            bb3_wv = np.array([1.,2.,3.])
             ## Add them to xarray coordinates
-            #xrcoords['bb3wv'] = bb3wv
+            #xrcoords['bb3_wv'] = bb3_wv
             #xrcoords_attrs[ivar+'wv_units'] = 'nanometers'
 
         # Get the various variables
@@ -139,6 +153,20 @@ def main(amt_n,amt_y):
                         elif (iivar == "chl"):
                             chlattrs = {ivar+'_'+iivar+'_units' : 'mg/m3',
                                         ivar+'_'+iivar+'_equation' : 'chla = (acs.ap(:,wv676)-39/65.*acs.ap(:,wv650)-26/65*acs.ap(:,wv714))./0.014;',
+                                        ivar+'_'+iivar+'_comment' : 'uncalibrated, not-debiased chl estimated from ACS ap'}
+
+                    elif (ivar == "ac9"):
+                        if (iivar == "N"):
+                            xrvars_attrs[ivar+'_'+iivar+"_units"] = 'number of binned measurements'
+
+                        elif (iivar == "chl"):
+                            ac9chlattrs = {ivar+'_'+iivar+'_units' : 'mg/m3',
+                                        ivar+'_'+iivar+'_equation' : 'chla = (acs.ap(:,wv676)-39/65.*acs.ap(:,wv650)-26/65*acs.ap(:,wv714))./0.014;',
+                                        ivar+'_'+iivar+'_comment' : 'uncalibrated, not-debiased chl estimated from ACS ap'}
+
+                        elif (iivar == "chl_adj"):
+                            ac9chlattrs = {ivar+'_'+iivar+'_units' : 'mg/m3',
+                                        ivar+'_'+iivar+'_equation' : 'chla_adj = chlAC9*median(chlACs/chlAC9)',
                                         ivar+'_'+iivar+'_comment' : 'uncalibrated, not-debiased chl estimated from ACS ap'}
 
                     elif (ivar+'_'+iivar == 'uway_lat'):
@@ -170,11 +198,11 @@ def main(amt_n,amt_y):
 
                 elif len(_tmp.shape)==2:
                     if ivar == 'acs':
-                        xrvars['%s_%s' % (ivar,iivar)] = (['time','wv'],_tmp)
+                        xrvars['%s_%s' % (ivar,iivar)] = (['time','acs_wv'],_tmp)
                         xrvars_attrs['%s_%s_units' % (ivar,iivar)] = '1/m'
 
                     elif ivar == 'bb3':
-                        xrvars['%s_%s' % (ivar,iivar)] = (['time','bb3wv'],_tmp)
+                        xrvars['%s_%s' % (ivar,iivar)] = (['time','bb3_wv'],_tmp)
                         xrvars_attrs['%s_%s_units' % (ivar,iivar)] = '1/m'
 
     # Create xarray dataset
@@ -188,7 +216,11 @@ def main(amt_n,amt_y):
         if 'acs_chl' in i:
             ds[i].attrs = chlattrs 
 
+        elif 'ac9_chl' in i:
+            ds[i].attrs = ac9chlattrs 
+
         else:
+#            ipdb.set_trace()
             ds[i].attrs = {'units' : xrvars_attrs[i+'_units']}
 
 
