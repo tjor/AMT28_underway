@@ -196,6 +196,7 @@ function step2a_ac9_amt_make_processed(ac9, dailyfile, ac9_lim, FORCE, flow)
     endif    
       
     out.ac9 = ac9.corr;
+    out.ac9.N = ac9.N;
     out.ac9.wv = wave;
     out.ac9.filt02_a = ac9.afilt_i;
     out.ac9.filt02_c = ac9.cfilt_i;
