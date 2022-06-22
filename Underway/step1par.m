@@ -39,7 +39,7 @@ function step1par(jday)
    % fflush(stdout);
 
    %---GRG----
-   wp = dir([wapdir,fn1, '*19_T_ASCII*'])  %identify each hour of 'iday'
+   wp = dir([wapdir,fn1, '*19_T_ASCII*']);  %identify each hour of 'iday'
 
    %break up the name
    for iwp = 1:size(wp,1)

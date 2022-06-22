@@ -316,7 +316,7 @@ function acsout = step2a_acs_amt_make_processed(acs, dailyfile, idays, acs_lim, 
    acs.Tsb_corr.nn = i_nn;
    acs.Tsb_corr.time = time;
    acs.Tsb_corr.wl = acs.wl;
-
+datevec(time(1))
    savefile = [FN_ROOT_STEP2 strsplit(dailyfile.name, "_"){end}];
 
    if exist(savefile, 'file')

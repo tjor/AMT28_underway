@@ -251,12 +251,14 @@ endfor
 % Get current year from inidate
 t0 = y0(str2num(inidate(1:4)));
 
-amt_optics.time = amt_optics.acs.time + t0     ;%     For example, on ship's day 288, WAS saves a file with 288 in the file name, but the times inside the file start on day 287 and end on day 288   
+amt_optics.time = amt_optics.acs.time + t0     ;%     
+amt_optics.acs.time = amt_optics.acs.time + t0     ;%   
+amt_optics.ac9.time = amt_optics.ac9.time + t0     ;%   
                                       
 
 % Interpolate ship's underway on acs time  % tjor: p
 % Starting from 2 removes time from the uway field
-for ifield = 2:length(fields)
+for ifield = 1:length(fields)
  %   amt_optics.uway.(fields{ifield}) = interp1(total_uway.time, total_uway.(fields{ifield}), amt_optics.time);
    amt_optics.uway.(fields{ifield}) = total_uway.(fields{ifield});
 endfor
