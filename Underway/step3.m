@@ -156,7 +156,7 @@ for ifn = 1:size(fn,1)
         amt_optics.acs.bp_u   = [amt_optics.acs.bp_u;   out.acs.bp_u];
         amt_optics.acs.cp_u   = [amt_optics.acs.cp_u;   out.acs.cp_u];
         amt_optics.acs.N      = [amt_optics.acs.N;   out.acs.N];
-        amt_optics.acs.wv   = [out.acs.wv];
+        amt_optics.acs.wv   = [acs_wv];
     else
         disp('acs do not exist in file')
     endif
