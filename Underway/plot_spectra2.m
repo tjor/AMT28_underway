@@ -82,13 +82,13 @@ function plot_spectra (jday_str, spectra_alim, spectra_clim, chl_lim)
 
         hcl = colorbar;
 
-        z = get(hcl, 'zticklabel');
-        for iz = 1:length(z)
-            z{iz} = sprintf('%02u', floor(str2num(z{iz})*23.9));
-        endfor
-        set(hcl, 'zticklabelmode', 'manual')
-        set(hcl, 'ztick', str2num(cell2mat(z')));
-        set(hcl, 'zticklabel', z, 'fontsize', 14);
+        %z = get(hcl, 'zticklabel');
+        %for iz = 1:length(z)
+         %   z{iz} = sprintf('%02u', floor(str2num(z{iz})*23.9));
+        %endfor
+        %set(hcl, 'zticklabelmode', 'manual')
+        %set(hcl, 'ztick', str2num(cell2mat(z')));
+        %set(hcl, 'zticklabel', z, 'fontsize', 14);
 
         axis([400 750 0 spectra_clim])
 
