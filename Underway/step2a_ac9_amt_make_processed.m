@@ -201,7 +201,6 @@ function step2a_ac9_amt_make_processed(ac9, dailyfile, ac9_lim, FORCE, flow)
     out.ac9.filt02_a = ac9.afilt_i;
     out.ac9.filt02_c = ac9.cfilt_i;
     out.ac9.time = time;
-datevec(out.ac9.time(1))
     
     save('-v6', savefile , 'out' )
     
