@@ -1,7 +1,22 @@
-%load acs data and process them using calibration independent technique (filter/NOfilter)
-% and a NIR-base correction for residual temperature dependence
-
 function acsout = step2a_acs_amt_make_processed(acs, dailyfile, idays, acs_lim, FORCE, acstype)
+
+   % tjor: the ACS function laods acs data and processes using calibration independent technique (filter/NOfilter)
+   % and a NIR-base correction for residual temperature dependence using subfunction T_sal_corr_0.m. Uncertainty proagation is
+   % currently done assuming that each source of uncertainty is independent.
+
+   % Processed outputs (saved in Step 2 matfile) are:
+
+   % ap: particulate absorption
+   % cp: particulate beam-attenuation
+   % bp: particulate backscattering
+   % ap_u: particulate absorption uncertainty
+   % cp_u: particulate beam-attenuation uncertainty
+   % bp_u: particulate backscattering uncertainty
+   % N: number of data points in each hourly bin (typically 240 for AMT 28)
+   % nn: number of data points that are not a NaN
+   % time: 
+   % wv or wl: wavelengths (posisble redudancy?)
+
 
    global dac2dTS
    global Yt Ysa

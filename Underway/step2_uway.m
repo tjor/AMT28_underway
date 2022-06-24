@@ -1,5 +1,5 @@
 %function tmp = step2_uway();
-   % Compute bio-physical quantities from optical data
+   % Compute bio-physical quantities (IOPs) from (uncallibrated) optical data
  
    clear all
    PLOT = 1;

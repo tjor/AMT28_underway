@@ -1,7 +1,24 @@
-%load ac9 data and process them using calibration independent technique (filter/NOfilter)
-# follows ACs processing, but without uncertainty propagation
-
 function step2a_ac9_amt_make_processed(ac9, dailyfile, ac9_lim, FORCE, flow)
+
+   % tjor: function loads ac9 data and processes them using calibration-independent technique (filter/NOfilter).
+   % The code follows ACs processing but without the NIR temperature correction from Sade et al. 2010 (instead a measurement eq,
+   % of the form  ap_corrected = ap - ap_NIR/bp_NIR*bp is used) within the subfunction scatt_corr_3.m.
+   % Uncertainty propagation was implemented in June 2022, following approacg for ACS (uncorreleted sources of uncertainty). This is
+   % also done within scatt_corr_3.m.
+  
+   % Processed outputs (Stored in Step 2 matfile)
+
+   % cp: particulate beam-attenuation
+   % bp: particulate backscattering
+   % ap_u: particulate absorption uncertainty
+   % cp_u: particulate beam-attenuation uncertainty
+   % bp_u: particulate backscattering uncertainty
+   % N: number of data points in each hourly bin (typically 240 for AMT 28)
+   % nn: number of data points that are not a NaN
+   % time: 
+   % wv : wavelengths
+
+
 
    % Global variables from step2
    global FN_ROOT_STEP2 
@@ -20,7 +37,7 @@ function step2a_ac9_amt_make_processed(ac9, dailyfile, ac9_lim, FORCE, flow)
 
     newT0 = y0(YYYY);  %reference time for plotting
 
-    wave = [412 440 488 510 532 554 650 676 715];
+    wave = [412 440 488 510 532 554 650 676 715]; % 9 channels of AC9
 
 
 

@@ -1,4 +1,14 @@
 function tmp = step2h_ships_underway_amt_make_processed(doy, DIR_GPS, GLOB_GPS, FN_GPS, FNC_GPS, DIR_METDATA, GLOB_METDATA, FN_METDATA, FNC_METDATA)
+	
+   % tjor: The `ships underway’ function loads the ships meteorological data. There are some hard-coded inputs to this function that are supplied in input_parameters.m. For AMT 28  	 these were: 
+
+	%GLOB_GPS = "2018\*"; 
+
+	%FN_GPS = "seatex-gga.ACO"; 
+
+	%FNC_GPS = @rd_seatech_gga; 
+
+	%GLOB_METDATA = "2018\*"; 
 
    global YYYY
    global DIR_STEP1

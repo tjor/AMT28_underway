@@ -1,5 +1,8 @@
 function flow = step2f_flow_make_processed(flow, dailyfile)
 
+   %tjor: The flow function is used for initialization (it checks if WAP variables are present).
+   %       If it is present, it then loads the function and itializaes the output data structure  
+
    % Global var for step2
    global FN_ROOT_STEP2 
 
