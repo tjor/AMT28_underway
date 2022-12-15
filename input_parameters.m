@@ -22,8 +22,8 @@ WAP_ROOT = strcat(lower(CRUISE),"b"); % tjor: `root" part of WAP file for <With_
 % day of switch to default config = 20180927, jday=270: "/" 
 % day of ACS switch = 20181019, jday=292": "With_AC9_Without_ACS/"% end day 301
 % dates
-inidate = "20180925";
-enddate = "20181028";
+inidate = "20181013";
+enddate = "20181015";
 %inidate = "20181015";
 %enddate = "20181025";
 
