@@ -61,7 +61,8 @@ def main(amt_n, amt_y):
     ds['time'].attrs = {'time zone' : 'UTC'}
     ds.time.encoding['units'] = "seconds since 1970-01-01 00:00:00"
     ds.time.encoding['calendar'] = "proleptic_gregorian"
-    
+   
+
     ds.assign_coords(wv =  amt['acs'].item()['wv'].item().squeeze() )
     ds['acs_wv'] = amt['acs'].item()['wv'].item().squeeze()
     ds['acs_wv'].attrs = {'units' : 'nanometers'}

@@ -10,8 +10,8 @@ graphics_toolkit("gnuplot");
 
 %-----------------------------
 CRUISE = "AMT28";
-%WAP_ROOT = lower(CRUISE); % tjor: `root" part of WAP file 
-WAP_ROOT = strcat(lower(CRUISE),"b"); % tjor: `root" part of WAP file for <With_AC9_Without_ACS
+WAP_ROOT = lower(CRUISE); % tjor: `root" part of WAP file 
+#WAP_ROOT = strcat(lower(CRUISE),"b"); % tjor: `root" part of WAP file for <With_AC9_Without_ACS
 %-----------------------------
 % Variables to be changed during cruise according to specific setups and user needs
 %
@@ -21,9 +21,18 @@ WAP_ROOT = strcat(lower(CRUISE),"b"); % tjor: `root" part of WAP file for <With_
 % first day of cruise = 20180925, jday=268: "With_AC9/"  
 % day of switch to default config = 20180927, jday=270: "/" 
 % day of ACS switch = 20181019, jday=292": "With_AC9_Without_ACS/"% end day 301
+# last day is 20181028
 % dates
-inidate = "20181013";
-enddate = "20181015";
+
+
+inidate = "20180925"; # first day
+enddate = "20181028"  # last day
+
+#inidate = "20181014";
+#enddate = "20180926";
+#enddate = "20181028"; # last day
+#enddate = "20181028"; # last day
+
 %inidate = "20181015";
 %enddate = "20181025";
 
@@ -34,9 +43,9 @@ WAPhour = "012"; % tjor: `processes all days with 0XXth hour of data present"
 
 % Underway subdirectory where to find special wapped data
 % Leave with simple / if no special case
-UWAY_WAP_SUBDIR = "With_AC9_Without_ACS/"; 
-%UWAY_WAP_SUBDIR = "With_AC9/"; 
-%UWAY_WAP_SUBDIR = "/"; 
+#UWAY_WAP_SUBDIR = "With_AC9_Without_ACS/"; 
+#UWAY_WAP_SUBDIR = "With_AC9/"; 
+UWAY_WAP_SUBDIR = "/"; 
 
 % Parameters specific for Underway plotting/processing
 % (this will change depending on specific section fo the cruise)
@@ -68,11 +77,14 @@ endif
 %-----------------------------
 % Paths
 #MAIN_PATH = "/users/rsg/tjor/scratch_network/AMT_underway/AMT28/";
+
 MAIN_PATH = "/data/abitibi1/scratch/scratch_disk/tjor/AMT_underway/AMT28/"; disp("\n\n-----------THIS IS FOR TOM----------\n\n"); fflush(stdout);
 %MAIN_PATH = "/tom/AMT_underway/AMT28/"; %disp("\n\n---------THIS IS FOR GIORGIO---------\n\n"); fflush(stdout);
-%MAIN_PATH = "/fast_scratch/AMT28/"; disp("\n\n---------THIS IS FOR GIORGIO---------\n\n"); fflush(stdout);
+#MAIN_PATH = "/fast_scratch/AMT28/"; disp("\n\n---------THIS IS FOR GIORGIO---------\n\n"); fflush(stdout);
 % MAIN_PATH = [MAIN_PATH, "/Data/", CRUISE,"/"];     % Root directory for current AMT cruise
 PATH_DATA = [MAIN_PATH, "Data/"];        % Directory with all raw and wapped data
+#PATH_DATA  = "/data/datasets/cruise_data/active/AMT28/Optics_all/Optics/Data/";
+
 PATH_SOURCE = [MAIN_PATH, "Source/"];% Directory with all source code
 OUT_PROC = [MAIN_PATH, "Processed/"];    % Output directory for processed oct and mat files
 OUT_FIGS = [MAIN_PATH, "Figures/"];      % Output directory for figures
@@ -108,6 +120,7 @@ ACS_CAL_FILE_NAME = "acs122_20180923.dev"; %tjor -remove hardcorded filename fro
 PATH_SHIP = [PATH_DATA, "Ship_uway/"]; %tjor - ships meteorological data
 PATH_TS = [PATH_SHIP, "Compress/"]; % Directory with ship underway ctd
 
+
 #----------------------------
 # Input parameters for ship"s underway data
 # 
@@ -131,7 +144,7 @@ global DIR_STEP2 = [OUT_PROC UWAY_DIR "Step2/"];
 global DIR_STEP3 = [OUT_PROC UWAY_DIR "Step3/"];
 global FN_ROOT_STEP2 = [DIR_STEP2 "proc_optics_" lower(CRUISE) "_"];
 
-
+global acs_wv = [400:2:750];
 
 % Create path for saving figures
 #   global fig_dir = [OUT_FIGS, UWAY_DIR];

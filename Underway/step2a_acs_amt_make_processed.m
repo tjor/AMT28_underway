@@ -28,6 +28,7 @@ function acsout = step2a_acs_amt_make_processed(acs, dailyfile, idays, acs_lim, 
    global FN_ROOT_STEP2 
    global DIR_FIGS 
    global YYYY
+   global acs_wv
 
    close all
 
@@ -258,7 +259,7 @@ function acsout = step2a_acs_amt_make_processed(acs, dailyfile, idays, acs_lim, 
    
    % ---GRG---
    % interpolate awl and cwl to match the band centers of a and c onto a common wavelength array (acs.wl)
-   acs.wl = [400:2:750];
+   acs.wl = acs_wv;
 
    %interpolate cp
    acs.int.cp = acs.int.cp_u = nan(size(acs.cp,1), length(acs.wl));
@@ -331,7 +332,7 @@ function acsout = step2a_acs_amt_make_processed(acs, dailyfile, idays, acs_lim, 
    acs.Tsb_corr.nn = i_nn;
    acs.Tsb_corr.time = time;
    acs.Tsb_corr.wl = acs.wl;
-datevec(time(1))
+
    savefile = [FN_ROOT_STEP2 strsplit(dailyfile.name, "_"){end}];
 
    if exist(savefile, 'file')
