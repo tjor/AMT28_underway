@@ -496,7 +496,7 @@ if __name__ == '__main__':
         # document files
         fn_docs_acs = 'checklist_acs_particulate_inline_AMT28.rtf,checklist_acs_ag_cg_AMT28.rtf,AMT28_ACS_inline_ProcessingReport.docx' # hardcoded
         fn_docs_ac9 = 'checklist_a9s_particulate_inline_AMT28.rtf,checklist_ac9_ag_cg_AMT28.rtf,AMT28_ACS_inline_ProcessingReport.docx' # hardcoded
-        fn_docs_hplc = 'checklist_hplc_AMT29_toedit.rtf,DAN-2019-012.pdf,Results_DAN_2019_012.xlsx'
+        fn_docs_hplc = 'checklist_hplc_DHI_AMT28.rtf,DAN-2019-012.pdf,Results_DAN_2019_012.xlsx'
         sys.path.append('../documents')
         
         # read ncdf file
