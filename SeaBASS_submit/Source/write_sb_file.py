@@ -31,9 +31,9 @@ def hdr(amt, fn_cal, fn_docs, model='ACS'):
     header = {
     "/begin_header": "",
     "/received=": "",
-    "/investigators=": "Giorgio_DallOlmo,Gavin_Tilstone,Tom_Jordan",
+    "/investigators=": "Giorgio_DallOlmo,Tom_Jordan,Gavin_Tilstone",
     "/affiliations=": "Plymouth_Marine_Laboratory,OGS",
-    "/contact=": "gdallolmo@ogs.it,ghti@pml.ac.uk,tjor@pml.ac.uk",
+    "/contact=": "gdallolmo@ogs.it,tjor@pml.ac.uk,ghti@pml.ac.uk",
     "/experiment=": "AMT",
     "/cruise=": amt.attrs['cruise_name'],
     "/station=": "NA",
@@ -73,26 +73,26 @@ def hdr(amt, fn_cal, fn_docs, model='ACS'):
             _fields = _fields + "ap" + str(iwv) + ","
             _units = _units + "1/m,"
         for iwv in amt.wv.values:# add std_ap
-            _fields = _fields + "ap" + str(iwv) + "_sd,"
+            _fields = _fields + "ap" + str(iwv) + "_unc,"
             _units = _units + "1/m,"
         for iwv in amt.wv.values:# add std_ap
             _fields = _fields + "cp" + str(iwv) + ","
             _units = _units + "1/m,"
         for iwv in amt.wv.values:# add std_cp
-            _fields = _fields + "cp" + str(iwv) + "_sd,"
+            _fields = _fields + "cp" + str(iwv) + "_unc,"
             _units = _units + "1/m,"
     elif model == 'AC9':
         for iwv in amt.ac9_wv.values:# add ap
             _fields = _fields + "ap" + str(iwv) + ","
             _units = _units + "1/m,"
         for iwv in amt.ac9_wv.values:# add std_ap
-            _fields = _fields + "ap" + str(iwv) + "_sd,"
+            _fields = _fields + "ap" + str(iwv) + "_unc,"
             _units = _units + "1/m,"
         for iwv in amt.ac9_wv.values:# add std_ap
             _fields = _fields + "cp" + str(iwv) + ","
             _units = _units + "1/m,"
         for iwv in amt.ac9_wv.values:# add std_cp
-            _fields = _fields + "cp" + str(iwv) + "_sd,"
+            _fields = _fields + "cp" + str(iwv) + "_unc,"
             _units = _units + "1/m,"
 
     # add final parts to strings
@@ -105,10 +105,18 @@ def hdr(amt, fn_cal, fn_docs, model='ACS'):
 
     ### fill in file name
     # extract start and end dates and times - mask applied as ac-s does not run all cruise
+    #if model == 'ACS':
+    #    i_good = amt['acs_ap'].values[:,10] != -9999
+    #elif model == 'AC9':
+    #    i_good = amt['ac9_ap'].values[:,5] != -9999
+        
+    # Dates are given for each system's operation (not total cruise)
     if model == 'ACS':
-        i_good = amt['acs_ap'].values[:,10] != -9999
+        i_good = np.isnan(amt['acs_ap'].values[:,10]) != 1
     elif model == 'AC9':
-        i_good = amt['ac9_ap'].values[:,5] != -9999
+        i_good = np.isnan(amt['ac9_ap'].values[:,5]) != 1
+    elif model == 'ACS2':
+        i_good = np.isnan(amt['acs2_ap'].values[:,10]) != 1
     
     start_date = pd.to_datetime(str(amt.time[i_good].values.min())).strftime('%Y%m%d')
     start_time = pd.to_datetime(str(amt.time[i_good].values.min())).strftime('%H:%M:%S[GMT]')
@@ -162,9 +170,9 @@ def hdr_hplc(amt, fn_docs):
     "/begin_header": "",
     "/received=": "",
     #"/identifier_product_doi": "",
-    "/investigators=": "Giorgio_DallOlmo,Gavin_Tilstone,Tom_Jordan",
-    "/affiliations=": "Plymouth_Marine_Laboratory,OGS",
-    "/contact=": "gdallolmo@ogs.it,ghti@pml.ac.uk,tjor@pml.ac.uk",
+    "/investigators=": "Giorgio_DallOlmo,Tom_Jordan,Gavin_Tilstone",
+    "/affiliations=": "Plymouth_Marine_Laboratory",
+    "/contact=": "gdallolmo@ogs.it,tjor@pml.ac.uk,ghtiti@pml.ac.uk",
     "/experiment=": "AMT",
     "/cruise=": amt.attrs['cruise_name'],
     "/station=": "NA",
@@ -183,6 +191,7 @@ def hdr_hplc(amt, fn_docs):
     "/west_longitude=": "DD.DDD[DEG]",
     "/water_depth=": "NA",
     "/HPLC_lab=": 'DHI',
+    "/HPLC_lab_technician=": "Louise_Schlueter",
     "/missing=": "-9999",
     "/delimiter=": "comma",
     "/fields=": "", 
@@ -272,7 +281,7 @@ def data_table(amt):
     acs_cp = amt['acs_cp'].to_pandas()
     acs_cp_u = amt['acs_cp_u'].to_pandas()
     acs_N = amt['acs_N'].to_pandas()
-    acs_chl_debiased = amt['acx_chl_debiased'].to_pandas() # xfield is used -  i_acs_ap_good mask ensures we select acs
+    acs_chl_debiased = amt['acx_chl_debiased'].to_pandas() # xfield is used 
 
     # remove acs_ap == -9999
     i_acs_ap_good = acs_ap.values[:,10] != -9999
@@ -494,8 +503,8 @@ if __name__ == '__main__':
         fn_cal_ac9 = 'ac90277.dev' 
         
         # document files
-        fn_docs_acs = 'checklist_acs_particulate_inline_AMT28.rtf,checklist_acs_ag_cg_AMT28.rtf,AMT28_ACS_inline_ProcessingReport.docx' # hardcoded
-        fn_docs_ac9 = 'checklist_a9s_particulate_inline_AMT28.rtf,checklist_ac9_ag_cg_AMT28.rtf,AMT28_ACS_inline_ProcessingReport.docx' # hardcoded
+        fn_docs_acs = 'checklist_acs_particulate_inline_AMT28.rtf,checklist_acs_ag_cg_AMT28.rtf,AMT28_ACS_AC9_inline_ProcessingReport.docx' # hardcoded
+        fn_docs_ac9 = 'checklist_a9s_particulate_inline_AMT28.rtf,checklist_ac9_ag_cg_AMT28.rtf,AMT28_ACS_AC9_inline_ProcessingReport.docx' # hardcoded
         fn_docs_hplc = 'checklist_hplc_DHI_AMT28.rtf,DAN-2019-012.pdf,Results_DAN_2019_012.xlsx'
         sys.path.append('../documents')
         
@@ -528,8 +537,8 @@ if __name__ == '__main__':
         export_2_seabass(header_hplc, amt2csv_hplc, fnout_hplc)
 
         # run fcheck
-        # run_fcheck(fnout_acs)
-        #run_fcheck(fnout_ac9)
+      #  run_fcheck(fnout_acs)
+        run_fcheck(fnout_ac9)
         run_fcheck(fnout_hplc)
 
 
