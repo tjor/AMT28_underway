@@ -74,6 +74,12 @@ def hdr(amt, fn_cal, fn_docs, model='ACS'):
             _units = _units + "1/m,"
         for iwv in amt.wv.values:# add std_ap
             _fields = _fields + "ap" + str(iwv) + "_unc,"
+            _units = _units + "1/m," 
+        for iwv in amt.wv.values:# add bp
+            _fields = _fields + "bp" + str(iwv) + ","
+            _units = _units + "1/m,"
+        for iwv in amt.wv.values:# add std_bp
+            _fields = _fields + "bp" + str(iwv) + "_unc,"
             _units = _units + "1/m,"
         for iwv in amt.wv.values:# add std_ap
             _fields = _fields + "cp" + str(iwv) + ","
@@ -87,6 +93,12 @@ def hdr(amt, fn_cal, fn_docs, model='ACS'):
             _units = _units + "1/m,"
         for iwv in amt.ac9_wv.values:# add std_ap
             _fields = _fields + "ap" + str(iwv) + "_unc,"
+            _units = _units + "1/m,"
+        for iwv in amt.ac9_wv.values:# add ap
+            _fields = _fields + "bp" + str(iwv) + ","
+            _units = _units + "1/m,"
+        for iwv in amt.ac9_wv.values:# add std_ap
+            _fields = _fields + "bp" + str(iwv) + "_unc,"
             _units = _units + "1/m,"
         for iwv in amt.ac9_wv.values:# add std_ap
             _fields = _fields + "cp" + str(iwv) + ","
@@ -278,10 +290,12 @@ def data_table(amt):
     sal = amt['uway_sal'].to_pandas()
     acs_ap = amt['acs_ap'].to_pandas()
     acs_ap_u = amt['acs_ap_u'].to_pandas()
+    acs_bp = amt['acs_bp'].to_pandas()
+    acs_bp_u = amt['acs_bp_u'].to_pandas()
     acs_cp = amt['acs_cp'].to_pandas()
     acs_cp_u = amt['acs_cp_u'].to_pandas()
     acs_N = amt['acs_N'].to_pandas()
-    acs_chl_debiased = amt['acx_chl_debiased'].to_pandas() # xfield is used 
+    acs_chl_debiased = amt['acx_chl_debiased_nomedfilt'].to_pandas() # xfield is used 
 
     # remove acs_ap == -9999
     i_acs_ap_good = acs_ap.values[:,10] != -9999
@@ -294,13 +308,15 @@ def data_table(amt):
     sal              = sal[i_acs_ap_good]
     acs_ap           = acs_ap[i_acs_ap_good]
     acs_ap_u         = acs_ap_u[i_acs_ap_good]
+    acs_bp           = acs_bp[i_acs_ap_good]
+    acs_bp_u         = acs_bp_u[i_acs_ap_good]
     acs_cp           = acs_cp[i_acs_ap_good]
     acs_cp_u         = acs_cp_u[i_acs_ap_good]
     acs_N            = acs_N[i_acs_ap_good]
     acs_chl_debiased =   acs_chl_debiased[i_acs_ap_good]
 
     print('     concatenating Series...')
-    amt2csv = pd.concat([dates, times, lat, lon, sst, sal, acs_ap, acs_ap_u, acs_cp, acs_cp_u, acs_N, acs_chl_debiased], axis=1)
+    amt2csv = pd.concat([dates, times, lat, lon, sst, sal, acs_ap, acs_ap_u, acs_bp, acs_bp_u, acs_cp, acs_cp_u, acs_N, acs_chl_debiased], axis=1)
 
     print('     removing NaNs from lat and lon...')
     # remove NaNs from lat
@@ -330,10 +346,12 @@ def data_table_ac9(amt):
     sal = amt['uway_sal'].to_pandas()
     ac9_ap = amt['ac9_ap'].to_pandas()
     ac9_ap_u = amt['ac9_ap_u'].to_pandas()
+    ac9_bp = amt['ac9_bp'].to_pandas()
+    ac9_bp_u = amt['ac9_bp_u'].to_pandas()
     ac9_cp = amt['ac9_cp'].to_pandas()
     ac9_cp_u = amt['ac9_cp_u'].to_pandas()
     ac9_N = amt['ac9_N'].to_pandas()
-    ac9_chl_debiased = amt['acx_chl_debiased'].to_pandas()  # xfield is used -  i_a9s_ap_good mask ensures we select ac9
+    ac9_chl_debiased = amt['acx_chl_debiased_nomedfilt'].to_pandas()  # xfield is used -  i_a9s_ap_good mask ensures we select ac9
 
     # remove acs_ap == -9999
     i_ac9_ap_good = ac9_ap.values[:,5] != -9999
@@ -346,13 +364,15 @@ def data_table_ac9(amt):
     sal              = sal[i_ac9_ap_good]
     ac9_ap           = ac9_ap[i_ac9_ap_good]
     ac9_ap_u         = ac9_ap_u[i_ac9_ap_good]
+    ac9_bp           = ac9_bp[i_ac9_ap_good]
+    ac9_bp_u         = ac9_bp_u[i_ac9_ap_good]
     ac9_cp           = ac9_cp[i_ac9_ap_good]
     ac9_cp_u         = ac9_cp_u[i_ac9_ap_good]
     ac9_N            = ac9_N[i_ac9_ap_good]
-    ac9_chl_debiased =   ac9_chl_debiased[i_ac9_ap_good]
+    ac9_chl_debiased = ac9_chl_debiased[i_ac9_ap_good]
 
     print('     concatenating Series...')
-    amt2csv = pd.concat([dates, times, lat, lon, sst, sal, ac9_ap, ac9_ap_u, ac9_cp, ac9_cp_u, ac9_N, ac9_chl_debiased], axis=1)
+    amt2csv = pd.concat([dates, times, lat, lon, sst, sal, ac9_ap, ac9_ap_u, ac9_bp, ac9_bp_u, ac9_cp, ac9_cp_u, ac9_N, ac9_chl_debiased], axis=1)
 
     print('     removing NaNs from lat and lon...')
     # remove NaNs from lat
@@ -537,7 +557,7 @@ if __name__ == '__main__':
         export_2_seabass(header_hplc, amt2csv_hplc, fnout_hplc)
 
         # run fcheck
-      #  run_fcheck(fnout_acs)
+        run_fcheck(fnout_acs)
         run_fcheck(fnout_ac9)
         run_fcheck(fnout_hplc)
 
