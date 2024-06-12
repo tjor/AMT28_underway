@@ -536,31 +536,32 @@ if __name__ == '__main__':
 
         # prepare header
         header_acs = hdr(amt, fn_cal_acs, fn_docs_acs, 'ACS')
-        header_ac9 = hdr(amt, fn_cal_ac9, fn_docs_ac9, 'AC9') # ACS and AC9 use same header writer function
-        header_hplc = hdr_hplc(amt,fn_docs_hplc)
+       # header_ac9 = hdr(amt, fn_cal_ac9, fn_docs_ac9, 'AC9') # ACS and AC9 use same header writer function
+       # header_hplc = hdr_hplc(amt,fn_docs_hplc)
         
         # prepare data
         amt2csv_acs = data_table(amt)
-        amt2csv_ac9 = data_table_ac9(amt)
-        amt2csv_hplc = data_table_hplc(amt)
+     #   amt2csv_ac9 = data_table_ac9(amt)
+     #   amt2csv_hplc = data_table_hplc(amt)
 
         # write file
         fnout_acs = '../sb_processed/' + header_acs['/data_file_name=']
         export_2_seabass(header_acs, amt2csv_acs, fnout_acs)
 
         # write file
-        fnout_ac9 = '../sb_processed/' + header_ac9['/data_file_name=']
-        export_2_seabass(header_ac9, amt2csv_ac9, fnout_ac9)
+      #  fnout_ac9 = '../sb_processed/' + header_ac9['/data_file_name=']
+      #  export_2_seabass(header_ac9, amt2csv_ac9, fnout_ac9)
 
         # write file
-        fnout_hplc = '../sb_processed/' + header_hplc['/data_file_name=']
-        export_2_seabass(header_hplc, amt2csv_hplc, fnout_hplc)
+      #  fnout_hplc = '../sb_processed/' + header_hplc['/data_file_name=']
+       # export_2_seabass(header_hplc, amt2csv_hplc, fnout_hplc)
 
         # run fcheck
+        
+      #  run_fcheck(fnout_ac9)
+       # run_fcheck(fnout_hplc)
+        
         run_fcheck(fnout_acs)
-        run_fcheck(fnout_ac9)
-        run_fcheck(fnout_hplc)
-
 
 # previous argv implementation
    # if len(sys.argv) == 1:
